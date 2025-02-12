@@ -1,0 +1,7 @@
+{
+  "schema": "./configs/schema.js",
+  "dialect":"postgresql",
+  "dbCredentials": {
+    "url":"postgresql://neondb_owner:npg_FI1ZudAXi0SD@ep-proud-surf-a4geku3k-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+  }
+}
