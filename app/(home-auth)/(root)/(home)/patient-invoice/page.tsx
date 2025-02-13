@@ -86,12 +86,6 @@ const PatientInvoice = () => {
             <p>
               <span className="font-semibold">Age:</span> 23
             </p>
-            <p>
-              <span className="font-semibold">Rank:</span> {selectedUser?.rank}
-            </p>
-            <p>
-              <span className="font-semibold">Unit:</span> {selectedUser?.unit}
-            </p>
           </div>
           <div className="text-lg">
             <p>
@@ -100,7 +94,7 @@ const PatientInvoice = () => {
             </p>
             <p>
               <span className="font-semibold">Insurance Provider:</span>{" "}
-              {selectedUser?.rank}
+              {selectedUser?.name}
             </p>
             <p>
               <span className="font-semibold">insurance Number:</span>{" "}

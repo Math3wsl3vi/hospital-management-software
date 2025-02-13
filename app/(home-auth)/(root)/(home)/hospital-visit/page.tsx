@@ -10,8 +10,6 @@ import { useUserStore } from "@/stores/UseStore";
 interface User {
   id: number;
   name: string;
-  unit: string;
-  rank: string;
   phone: string;
   sex: string;
   dob: string;
@@ -143,13 +141,13 @@ const HospitalVisit = () => {
             <h1 className="font-poppins text-center mb-5 text-lg">
               Welcome to Lanet Regional Hospital{" "}
               <span className="font-semibold">
-                {selectedUser?.rank} {selectedUser?.name}
+                 {selectedUser?.name}
               </span>
             </h1>
             <div className="flex flex-col gap-5">
               {/* Patient Details */}
               <div className="gap-2 flex flex-col">
-                <label>Service Number</label>
+                <label>National Id Number</label>
                 <div className="border p-2 rounded-md">{selectedUser?.id}</div>
               </div>
               <div className="flex flex-row gap-3 w-full">
@@ -162,15 +160,6 @@ const HospitalVisit = () => {
                   <div className="border p-2 rounded-md">{selectedUser?.dob}</div>
                 </div>
               </div>
-              <div className="gap-2 flex flex-col">
-                <label>Rank</label>
-                <div className="border p-2 rounded-md">{selectedUser?.rank}</div>
-              </div>
-              <div className="gap-2 flex flex-col">
-                <label>Unit</label>
-                <div className="border p-2 rounded-md">{selectedUser?.unit}</div>
-              </div>
-
               {/* Selected Payment Method */}
               <div className="gap-2 flex flex-col">
                 <label>Payment Method</label>

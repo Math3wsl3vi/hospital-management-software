@@ -6,8 +6,6 @@ const TriageInput = ({
   selectedUser: {
     name: string;
     id: number;
-    unit: string;
-    rank: string;
     phone: string;
     sex: string;
     dob: string;
@@ -29,22 +27,6 @@ const TriageInput = ({
           </div>
         </div>
       </div>
-
-      <div className="flex gap-10 w-full">
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Unit</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
-            {selectedUser?.unit || "N/A"}
-          </div>
-        </div>
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Rank</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
-            {selectedUser?.rank || "N/A"}
-          </div>
-        </div>
-      </div>
-
       <div className="flex gap-10 w-full">
         <div className="gap-2 flex flex-col w-1/2">
           <label htmlFor="service">Phone Number</label>
