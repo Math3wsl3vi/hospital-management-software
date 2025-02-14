@@ -1,0 +1,1 @@
+ALTER TABLE "patients" ALTER COLUMN "gender" SET DATA TYPE sex;

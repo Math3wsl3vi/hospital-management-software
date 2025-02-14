@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Input } from "./ui/input";
-import { Checkbox } from "./ui/checkbox";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -17,6 +16,13 @@ import { Calendar } from "@/components/ui/calendar";
 import Loader from "./Loader";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Textarea } from "./ui/textarea";
 
 const personalDetailsSchema = z.object({
   child: z.boolean(),
@@ -49,31 +55,27 @@ const personalDetailsSchema = z.object({
 const PersonalDetails = () => {
   // State for form data
   const [formData, setFormData] = useState({
-    child: false,
-    spouse: false,
-    dob: null as string | null,
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    sex: "",
-    email: "",
-    maritalStatus: "",
-    unit: "",
-    rank: "",
-    bloodType: "",
-    address: "",
-    county: "",
-    city: "",
-    postalCode: "",
-    phone: "",
-    secondaryAddress: "",
-    emergencyName: "",
-    emergencyRelation: "",
-    emergencyPhone: "",
-    emergencyContactTelephone: "",
-    emergencyEmail: "",
-    insuranceProvider: "",
-    insuranceNumber: "",
+    firstName: "", // Required
+    middleName: "", // Optional
+    lastName: "", // Required
+    dateOfBirth: "", // Required, format: YYYY-MM-DD
+    gender: "", // Required, must match genderEnum values
+    maritalStatus: "", // Required, must match maritalStatusEnum values
+    nationalId: "", // Required, unique, max length 20
+    phoneNumber: "", // Required, unique, max length 15
+    email: "", // Optional, unique, max length 100
+    residentialAddress: "", // Optional
+    bloodGroup: "", // Required, must match bloodGroupEnum values
+    allergies: "", // Optional
+    chronicConditions: "", // Optional
+    currentMedications: "", // Optional
+    pastMedicalHistory: "", // Optional
+    familyMedicalHistory: "", // Optional
+    insuranceProvider: "", // Optional, max length 100
+    insurancePolicyNumber: "", // Optional, max length 50
+    nhifNumber: "", // Optional, unique, max length 20
+    paymentPreference: "", // Required, must match paymentEnum values
+    registrationDate: new Date().toISOString().split("T")[0],
   });
 
   const [date, setDate] = useState<Date>();
@@ -82,19 +84,11 @@ const PersonalDetails = () => {
   const { toast } = useToast();
 
   // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
-
-  // Handle checkbox changes
-  const handleCheckChange = (checked: boolean | string, field: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: Boolean(checked),
     }));
   };
 
@@ -162,78 +156,7 @@ const PersonalDetails = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl mb-6">Personal Details</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-6">
-        {/* Top Section */}
-        <div className="flex flex-row gap-5 items-center">
-          <div className="w-1/3">
-            <label>Service Number</label>
-            <Input
-              name="serviceNumber"
-              onChange={handleInputChange}
-              className="mt-2"
-            />
-          </div>
-          <div className="w-1/3">
-            <label>Date of Registration</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left mt-2 font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={handleDateSelect}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          <div className="w-1/3 flex items-center gap-10 mt-7">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                onCheckedChange={(checked) =>
-                  handleCheckChange(checked, "spouse")
-                }
-                checked={formData.spouse}
-                id="spouse"
-              />
-              <label
-                htmlFor="spouse"
-                className="text-sm font-medium leading-none"
-              >
-                Spouse
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                onCheckedChange={(checked) =>
-                  handleCheckChange(checked, "child")
-                }
-                checked={formData.child}
-                id="child"
-              />
-              <label
-                htmlFor="child"
-                className="text-sm font-medium leading-none"
-              >
-                Child
-              </label>
-            </div>
-          </div>
-        </div>
-        <hr className="mt-7" />
-
         {/* Personal Details Section */}
         <h1 className="text-xl">Personal Details</h1>
         <div className="flex flex-row gap-5 items-start">
@@ -275,14 +198,83 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Gender</label>
               <div className="flex flex-col gap-1 w-2/3">
-              <Input
-                name="sex"
-                onChange={handleInputChange}
-                className="mt-2"
-              />
-              {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Input
+                      name="gender"
+                      onChange={handleInputChange}
+                      className="mt-2"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="border-none w-[370px] font-poppins ">
+                  {["Male", "female"].map(
+                    (status) => (
+                      <DropdownMenuItem
+                        key={status}
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            gender: status,
+                          }))
+                        }
+                      >
+                        {status}
+                      </DropdownMenuItem>
+                    )
+                  )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                {errors.gender && (
+                  <p className="text-red-500 text-sm">{errors.gender}</p>
+                )}
               </div>
             </div>
+          </div>
+          <div className="w-1/3">
+            <div className="flex w-full items-center">
+              <label className="w-1/3">National Id Number</label>
+              <div className="flex flex-col w-2/3 gap-1">
+                <Input
+                  name="nationalId"
+                  onChange={handleInputChange}
+                  className="mt-2"
+                />
+                {errors.lastName && (
+                  <p className="text-red-500 text-sm">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
+            <div className="flex w-full items-center">
+              <label className="w-1/3">Marital Status</label>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Input
+                    name="maritalStatus"
+                    onChange={handleInputChange}
+                    value={formData.maritalStatus}
+                    className="mt-2 w-2/3 text-left"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="border-none w-[370px] font-poppins ">
+                  {["Married", "Single", "Divorced", "Widowed"].map(
+                    (status) => (
+                      <DropdownMenuItem
+                        key={status}
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            maritalStatus: status,
+                          }))
+                        }
+                      >
+                        {status}
+                      </DropdownMenuItem>
+                    )
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
             <div className="flex w-full items-center">
               <label className="w-1/3">Date of Birth</label>
               <Popover>
@@ -309,53 +301,6 @@ const PersonalDetails = () => {
               </Popover>
             </div>
           </div>
-          <div className="w-1/3">
-            <div className="flex w-full items-center">
-              <label className="w-1/3">Email</label>
-              <div className="flex flex-col w-2/3">
-              <Input
-                name="email"
-                onChange={handleInputChange}
-                className="mt-2"
-              />
-                 {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
-                )}
-                </div>
-            </div>
-            <div className="flex w-full items-center">
-              <label className="w-1/3">Marital Status</label>
-              <Input
-                name="maritalStatus"
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-              />
-            </div>
-            <div className="flex w-full items-center">
-              <label className="w-1/3">Unit</label>
-              <Input
-                name="unit"
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-              />
-            </div>
-            <div className="flex w-full items-center">
-              <label className="w-1/3">Rank</label>
-              <Input
-                name="rank"
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-              />
-            </div>
-            <div className="flex w-full items-center">
-              <label className="w-1/3">Blood Type</label>
-              <Input
-                name="bloodType"
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-              />
-            </div>
-          </div>
           <div className="w-1/3 flex items-center justify-center gap-5">
             <h1>Upload Image</h1>
             <div className="border p-10 w-44 h-44 cursor-pointer flex items-center justify-center rounded-md">
@@ -366,21 +311,26 @@ const PersonalDetails = () => {
         <hr className="mt-7" />
 
         {/* Home Address Section */}
-        <h1 className="text-xl">Home Address</h1>
-        <div className="flex flex-row gap-5 items-center">
+        <h1 className="text-xl">Contact Information</h1>
+        <div className="flex flex-row gap-5 items-start">
           <div className="w-1/3">
             <div className="flex w-full items-center">
-              <label className="w-1/3">Address</label>
-              <Input
-                name="address"
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-              />
+              <label className="w-1/3">Email</label>
+              <div className="flex flex-col w-2/3">
+                <Input
+                  name="email"
+                  onChange={handleInputChange}
+                  className="mt-2"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
+              </div>
             </div>
             <div className="flex w-full items-center">
-              <label className="w-1/3">County</label>
+              <label className="w-1/3">Emergency Contact</label>
               <Input
-                name="county"
+                name="address"
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -388,7 +338,7 @@ const PersonalDetails = () => {
           </div>
           <div className="w-1/3">
             <div className="flex w-full items-center">
-              <label className="w-1/3">City</label>
+              <label className="w-1/3">Phone Number</label>
               <Input
                 name="city"
                 onChange={handleInputChange}
@@ -396,7 +346,7 @@ const PersonalDetails = () => {
               />
             </div>
             <div className="flex w-full items-center">
-              <label className="w-1/3">Postal Code</label>
+              <label className="w-1/3">Emergency Contact Relation</label>
               <Input
                 name="postalCode"
                 onChange={handleInputChange}
@@ -406,7 +356,7 @@ const PersonalDetails = () => {
           </div>
           <div className="w-1/3">
             <div className="flex w-full items-center">
-              <label className="w-1/3">Home Phone</label>
+              <label className="w-1/3">Home Address</label>
               <Input
                 name="phone"
                 onChange={handleInputChange}
@@ -414,7 +364,7 @@ const PersonalDetails = () => {
               />
             </div>
             <div className="flex w-full items-center">
-              <label className="w-1/3">Secondary Address</label>
+              <label className="w-1/3">Emergency Contact Phone</label>
               <Input
                 name="secondaryAddress"
                 onChange={handleInputChange}
@@ -426,57 +376,71 @@ const PersonalDetails = () => {
         <hr className="mt-7" />
 
         {/* Emergency Contact Section */}
-        <h1 className="text-xl">Emergency Contact</h1>
+        <h1 className="text-xl">Medical Information</h1>
         <div className="flex flex-row gap-5 items-start">
           <div className="w-1/3">
             <div className="flex w-full items-center">
-              <label className="w-1/3">Full Name</label>
+              <label className="w-1/3">Blood Type</label>
               <Input
-                name="emergencyName"
+                name="bloodType"
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
             </div>
             <div className="flex w-full items-center">
-              <label className="w-1/3">Relation</label>
-              <Input
-                name="emergencyRelation"
+              <label className="w-1/3">Allergies</label>
+              <Textarea
+                name="allergies"
+                value={formData.allergies}
                 onChange={handleInputChange}
-                className="mt-2 w-2/3"
+                placeholder="e.g. medication, food, environment"
+                className="mt-2 w-2/3 min-h-20"
               />
             </div>
           </div>
           <div className="w-1/3">
             <div className="flex w-full items-center">
-              <label className="w-1/3">Phone Number</label>
+              <label className="w-1/3">Chronic Conditions</label>
               <div className="flex flex-col w-2/3 gap-1">
-              <Input
-                name="emergencyPhone"
-                onChange={handleInputChange}
-                className="mt-2"
-              />
-              {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                <Textarea
+                  name="chronicConditions"
+                  value={formData.chronicConditions}
+                  onChange={handleInputChange}
+                  placeholder="e.g. diabetes, hypertension"
+                  className="mt-2 min-h-20"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm">{errors.phone}</p>
+                )}
               </div>
             </div>
             <div className="flex w-full items-center">
-              <label className="w-1/3">Telephone</label>
-              <Input
-                name="emergencyPhone"
+              <label className="w-1/3">Past Medical History</label>
+              <Textarea
+                name="pastMedicalHistory"
                 onChange={handleInputChange}
-                className="mt-2 w-2/3"
+                value={formData.pastMedicalHistory}
+                placeholder="surgeries, previous hospitalizations"
+                className="mt-2 w-2/3 min-h-20"
               />
             </div>
           </div>
           <div className="w-1/3">
             <div className="flex w-full items-center">
-              <label className="w-1/3">Email</label>
+              <label className="w-1/3">Family Medical History</label>
               <div className="flex flex-col gap-1 w-2/3">
-              <Input
-                name="emergencyEmail"
-                onChange={handleInputChange}
-                className="mt-2"
-              />
-              {errors.emergencyEmail && <p className="text-red-500 text-sm">{errors.emergencyEmail}</p>}
+                <Textarea
+                  placeholder="e.g. hereditary diseases"
+                  value={formData.familyMedicalHistory}
+                  onChange={handleInputChange}
+                  name="familyMedicalHistory"
+                  className="mt-2 min-h-20"
+                />
+                {errors.emergencyEmail && (
+                  <p className="text-red-500 text-sm">
+                    {errors.emergencyEmail}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -495,10 +459,64 @@ const PersonalDetails = () => {
                 className="mt-2 w-2/3"
               />
             </div>
+            <div className="flex w-full items-center">
+              <label className="w-1/3">Payment Preference </label>
+              <Input
+                name="insuranceProvider"
+                placeholder="Cash, Insurance, Mobile Money, etc."
+                onChange={handleInputChange}
+                className="mt-2 w-2/3"
+              />
+            </div>
           </div>
           <div className="w-1/3">
             <div className="flex w-full items-center">
               <label className="w-1/3">Insurance Provider Number</label>
+              <Input
+                name="insuranceNumber"
+                onChange={handleInputChange}
+                className="mt-2 w-2/3"
+              />
+            </div>
+          </div>
+          <div className="w-1/3">
+            <div className="flex w-full items-center">
+              <label className="w-1/3">NHIF Number</label>
+              <Input
+                name="insuranceNumber"
+                onChange={handleInputChange}
+                className="mt-2 w-2/3"
+              />
+            </div>
+          </div>
+        </div>
+        <hr className="mt-7" />
+        {/* Next of kin Section */}
+        <h1 className="text-xl">Next of Kin</h1>
+        <div className="flex flex-row gap-5 items-start">
+          <div className="w-1/3">
+            <div className="flex w-full items-center">
+              <label className="w-1/3">Full Name</label>
+              <Input
+                name="insuranceProvider"
+                onChange={handleInputChange}
+                className="mt-2 w-2/3"
+              />
+            </div>
+          </div>
+          <div className="w-1/3">
+            <div className="flex w-full items-center">
+              <label className="w-1/3">Relationship to Patient</label>
+              <Input
+                name="insuranceNumber"
+                onChange={handleInputChange}
+                className="mt-2 w-2/3"
+              />
+            </div>
+          </div>
+          <div className="w-1/3">
+            <div className="flex w-full items-center">
+              <label className="w-1/3">Contact Information</label>
               <Input
                 name="insuranceNumber"
                 onChange={handleInputChange}

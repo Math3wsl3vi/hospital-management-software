@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     // Check for existing phone/email to avoid duplicates
     const existingPatient = await db.query.patients.findFirst({
-      where: eq(patients.phone, body.phone),
+      where: eq(patients.phoneNumber, body.phone),
     });
 
     if (existingPatient) {
@@ -19,28 +19,29 @@ export async function POST(req: Request) {
     // Insert patient data
     const result = await db.insert(patients).values({
       firstName: body.firstName,  
-      middleName: body.middleName,
+      middleName: body.middleName ?? null, // Handle optional values
       lastName: body.lastName,
-      rank: body.rank,
-      unit: body.unit,
-      phone: body.phone,
-      secondaryPhone: body.secondaryPhone,
+      dateOfBirth: new Date(body.dob).toISOString(),  
+      gender: body.gender as "Male" | "Female",
+      maritalStatus: body.maritalStatus ?? null,
+      nationalId: body.nationalId,
+      phoneNumber: body.phone,
       email: body.email,
-      sex: body.sex,
-      dob: new Date(body.dob).toISOString(),  
-      bloodType: body.bloodType,
-      maritalStatus: body.maritalStatus,
-      homeAddress: body.homeAddress,
-      county: body.county,
-      city: body.city,
-      postalCode: body.postalCode,
-      emergencyName: body.emergencyName,
-      emergencyRelation: body.emergencyRelation,
-      emergencyPhone: body.emergencyPhone,
-      emergencyEmail: body.emergencyEmail,
-      insuranceProvider: body.insuranceProvider,
-      insuranceNumber: body.insuranceNumber,
+      residentialAddress: body.homeAddress ?? null,
+      bloodGroup: body.bloodType as "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-", // Ensure correct ENUM values
+      allergies: body.allergies ?? null,
+      chronicConditions: body.chronicConditions ?? null,
+      currentMedications: body.currentMedications ?? null,
+      pastMedicalHistory: body.pastMedicalHistory ?? null,
+      familyMedicalHistory: body.familyMedicalHistory ?? null,
+      insuranceProvider: body.insuranceProvider ?? null,
+      insurancePolicyNumber: body.insuranceNumber ?? null,
+      nhifNumber: body.nhifNumber ?? null,
+      paymentPreference: body.paymentPreference as "Mpesa" | "Insurance" | "Credit Card",
+      registrationDate: new Date().toISOString(),
     }).returning();
+   
+    
     
     console.log(Object.keys(patients));
 

@@ -1,37 +1,38 @@
-import { pgTable, serial, text, integer, timestamp, date } from "drizzle-orm/pg-core";
+import { serial, text, integer, timestamp, date, pgEnum, varchar, pgTable} from "drizzle-orm/pg-core";
+
+export const bloodGroupEnum = pgEnum("blood_group", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]);
+export const genderEnum = pgEnum("gender", ["Male", "Female"]);
+export const paymentEnum = pgEnum("payment_preference", ["Mpesa", "Insurance","Credit Card"]);
+export const maritalStatusEnum = pgEnum("marital_status", ["Married", "Single","Divorced", "Widowed"]);
+
 
 // Patients Table
 export const patients = pgTable("patients", {
   id: serial("id").primaryKey(),
-  firstName: text("first_name").notNull(),
-  middleName: text("middle_name"),
-  lastName: text("last_name").notNull(),
-  rank: text("rank"),
-  unit: text("unit"),
-  phone: text("phone").unique().notNull(),
-  secondaryPhone: text("secondary_phone"),
-  email: text("email").unique().notNull(),
-  sex: text("sex").notNull(),
-  dob: date("dob").notNull(),
-  bloodType: text("blood_type"),
-  maritalStatus: text("marital_status"),
-  homeAddress: text("home_address"),
-  county: text("county"),
-  city: text("city"),
-  postalCode: text("postal_code"),
-  
-  // Emergency Contact
-  emergencyName: text("emergency_name").notNull(),
-  emergencyRelation: text("emergency_relation").notNull(),
-  emergencyPhone: text("emergency_phone").notNull(),
-  emergencyEmail: text("emergency_email"),
+  firstName: varchar("first_name", { length: 50 }).notNull(),
+  middleName: varchar("middle_name", { length: 50 }),
+  lastName: varchar("last_name", { length: 50 }).notNull(),
+  dateOfBirth: date("date_of_birth").notNull(),
+  gender: genderEnum("gender").notNull(),
+  maritalStatus: maritalStatusEnum("marital_status").notNull(),
+  nationalId: varchar("national_id", { length: 20 }).unique().notNull(),
+  phoneNumber: varchar("phone_number", { length: 15 }).unique().notNull(),
+  email: varchar("email", { length: 100 }).unique(),
+  residentialAddress: text("residential_address"),
+  bloodGroup: bloodGroupEnum("blood_group").notNull(),
+  allergies: text("allergies"),
+  chronicConditions: text("chronic_conditions"),
+  currentMedications: text("current_medications"),
+  pastMedicalHistory: text("past_medical_history"),
+  familyMedicalHistory: text("family_medical_history"),
+  insuranceProvider: varchar("insurance_provider", { length: 100 }),
+  insurancePolicyNumber: varchar("insurance_policy_number", { length: 50 }),
+  nhifNumber: varchar("nhif_number", { length: 20 }).unique(),
+  paymentPreference: paymentEnum("payment_preference").notNull(),
+  registrationDate: date("registration_date").defaultNow(),
+}
+);
 
-  // Insurance
-  insuranceProvider: text("insurance_provider"),
-  insuranceNumber: text("insurance_number").unique(),
-
-  createdAt: timestamp("created_at").defaultNow(),
-});
 
 
 // Doctors Table
