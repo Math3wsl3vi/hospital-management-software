@@ -166,6 +166,7 @@ const PersonalDetails = () => {
               <div className="flex flex-col w-2/3 gap-1">
                 <Input
                   name="firstName"
+                  value={formData.firstName}
                   onChange={handleInputChange}
                   className="mt-2"
                 />
@@ -178,6 +179,7 @@ const PersonalDetails = () => {
               <label className="w-1/3">Middle Name</label>
               <Input
                 name="middleName"
+                value={formData.middleName}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -187,6 +189,7 @@ const PersonalDetails = () => {
               <div className="flex flex-col w-2/3 gap-1">
                 <Input
                   name="lastName"
+                  value={formData.lastName}
                   onChange={handleInputChange}
                   className="mt-2"
                 />
@@ -202,23 +205,24 @@ const PersonalDetails = () => {
                   <DropdownMenuTrigger asChild>
                     <Input
                       name="gender"
+                      value={formData.gender}
                       onChange={handleInputChange}
-                      className="mt-2"
+                      className="mt-2 text-left"
                     />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="border-none w-[370px] font-poppins ">
                   {["Male", "female"].map(
-                    (status) => (
+                    (gender) => (
                       <DropdownMenuItem
-                        key={status}
+                        key={gender}
                         onClick={() =>
                           setFormData((prev) => ({
                             ...prev,
-                            gender: status,
+                            gender: gender,
                           }))
                         }
                       >
-                        {status}
+                        {gender}
                       </DropdownMenuItem>
                     )
                   )}
@@ -236,6 +240,7 @@ const PersonalDetails = () => {
               <div className="flex flex-col w-2/3 gap-1">
                 <Input
                   name="nationalId"
+                  value={formData.nationalId}
                   onChange={handleInputChange}
                   className="mt-2"
                 />
@@ -320,6 +325,7 @@ const PersonalDetails = () => {
                 <Input
                   name="email"
                   onChange={handleInputChange}
+                  value={formData.email}
                   className="mt-2"
                 />
                 {errors.email && (
@@ -332,6 +338,7 @@ const PersonalDetails = () => {
               <Input
                 name="address"
                 onChange={handleInputChange}
+                value={formData.residentialAddress}
                 className="mt-2 w-2/3"
               />
             </div>
@@ -340,7 +347,8 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Phone Number</label>
               <Input
-                name="city"
+                name="phoneNumber"
+                value={formData.phoneNumber}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -349,6 +357,7 @@ const PersonalDetails = () => {
               <label className="w-1/3">Emergency Contact Relation</label>
               <Input
                 name="postalCode"
+                value={formData.pastMedicalHistory}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -359,6 +368,7 @@ const PersonalDetails = () => {
               <label className="w-1/3">Home Address</label>
               <Input
                 name="phone"
+                value={formData.residentialAddress}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -381,11 +391,33 @@ const PersonalDetails = () => {
           <div className="w-1/3">
             <div className="flex w-full items-center">
               <label className="w-1/3">Blood Type</label>
-              <Input
-                name="bloodType"
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Input
+                    name="bloodGroup"
+                    onChange={handleInputChange}
+                    value={formData.bloodGroup}
+                    className="mt-2 w-2/3 text-left"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="border-none w-[370px] font-poppins ">
+                  {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+                    (blood) => (
+                      <DropdownMenuItem
+                        key={blood}
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            bloodGroup: blood,
+                          }))
+                        }
+                      >
+                        {blood}
+                      </DropdownMenuItem>
+                    )
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="flex w-full items-center">
               <label className="w-1/3">Allergies</label>
@@ -455,6 +487,7 @@ const PersonalDetails = () => {
               <label className="w-1/3">Insurance Provider</label>
               <Input
                 name="insuranceProvider"
+                value={formData.insuranceProvider}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -466,6 +499,7 @@ const PersonalDetails = () => {
                 placeholder="Cash, Insurance, Mobile Money, etc."
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
+                value={formData.paymentPreference}
               />
             </div>
           </div>
@@ -474,6 +508,7 @@ const PersonalDetails = () => {
               <label className="w-1/3">Insurance Provider Number</label>
               <Input
                 name="insuranceNumber"
+                value={formData.insurancePolicyNumber}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -484,13 +519,14 @@ const PersonalDetails = () => {
               <label className="w-1/3">NHIF Number</label>
               <Input
                 name="insuranceNumber"
+                value={formData.nhifNumber}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
             </div>
           </div>
         </div>
-        <hr className="mt-7" />
+        <hr className="mt-7<hr className="mt-7" />" />
         {/* Next of kin Section */}
         <h1 className="text-xl">Next of Kin</h1>
         <div className="flex flex-row gap-5 items-start">
@@ -499,6 +535,7 @@ const PersonalDetails = () => {
               <label className="w-1/3">Full Name</label>
               <Input
                 name="insuranceProvider"
+                value={formData.ne}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
