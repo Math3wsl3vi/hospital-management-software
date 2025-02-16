@@ -24,68 +24,83 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "./ui/textarea";
 
+
+const genderEnum = z.enum(["Male", "Female"]);
+const maritalStatusEnum = z.enum(["Single", "Married", "Divorced", "Widowed"]);
+const bloodGroupEnum = z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]);
+const paymentEnum = z.enum(["Cash", "Insurance", "Mobile Money", "Bank Transfer"]);
+
 const personalDetailsSchema = z.object({
-  child: z.boolean(),
-  spouse: z.boolean(),
-  dob: z.string(),
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  firstName: z.string().min(1, "First name is required"),
   middleName: z.string().optional(),
-  lastName: z.string().min(2, "First name must be at least 2 characters"),
-  sex: z.enum(["Male", "Female"]),
-  email: z.string().email("Invalid Email address"),
-  maritalStatus: z.string().optional(),
-  unit: z.string().optional(),
-  rank: z.string().optional(),
-  bloodType: z.string().optional(),
-  address: z.string().optional(),
-  county: z.string().optional(),
-  city: z.string().optional(),
-  postalCode: z.string().optional(),
-  phone: z.string().min(10, "Phone must be atleast 10 characters"),
-  secondaryAddress: z.string().optional(),
-  emergencyName: z.string().optional(),
-  emergencyRelation: z.string().optional(),
-  emergencyPhone: z.string().optional(),
-  emergencyContactTelephone: z.string().optional(),
-  emergencyEmail: z.string().email("Invalid email"),
-  insuranceProvider: z.string().optional(),
-  insuranceNumber: z.string(),
+  lastName: z.string().min(1, "Last name is required"),
+  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  gender: genderEnum,
+  maritalStatus: maritalStatusEnum,
+  nationalId: z.string().min(1, "National ID is required").max(20),
+  phoneNumber: z.string().min(1, "Phone number is required").max(15),
+  email: z.string().email().max(100).optional(),
+  residentialAddress: z.string().optional(),
+  bloodGroup: bloodGroupEnum,
+  allergies: z.string().optional(),
+  chronicConditions: z.string().optional(),
+  currentMedications: z.string().optional(),
+  pastMedicalHistory: z.string().optional(),
+  familyMedicalHistory: z.string().optional(),
+  insuranceProvider: z.string().max(100).optional(),
+  insurancePolicyNumber: z.string().max(50).optional(),
+  nhifNumber: z.string().max(20).optional(),
+  paymentPreference: paymentEnum,
+  nextOfKin: z.string().min(1, "Next of kin is required"),
+  nextOfKinRelatonship: z.string().min(1, "Next of kin relationship is required"),
+  nextOfKinContact: z.string().min(1, "Next of kin contact is required"),
+  emergencyName: z.string().min(1, "Emergency contact name is required"),
+  emergencyRelatonship: z.string().min(1, "Emergency contact relationship is required"),
+  emergencyContact: z.string().min(1, "Emergency contact number is required"),
+  registrationDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
 });
 
 const PersonalDetails = () => {
   // State for form data
   const [formData, setFormData] = useState({
-    firstName: "", // Required
-    middleName: "", // Optional
-    lastName: "", // Required
-    dateOfBirth: "", // Required, format: YYYY-MM-DD
-    gender: "", // Required, must match genderEnum values
-    maritalStatus: "", // Required, must match maritalStatusEnum values
-    nationalId: "", // Required, unique, max length 20
-    phoneNumber: "", // Required, unique, max length 15
-    email: "", // Optional, unique, max length 100
-    residentialAddress: "", // Optional
-    bloodGroup: "", // Required, must match bloodGroupEnum values
-    allergies: "", // Optional
-    chronicConditions: "", // Optional
-    currentMedications: "", // Optional
-    pastMedicalHistory: "", // Optional
-    familyMedicalHistory: "", // Optional
-    insuranceProvider: "", // Optional, max length 100
-    insurancePolicyNumber: "", // Optional, max length 50
-    nhifNumber: "", // Optional, unique, max length 20
-    paymentPreference: "", // Required, must match paymentEnum values
+    firstName: "", 
+    middleName: "", 
+    lastName: "", 
+    dateOfBirth: "", 
+    gender: "", 
+    maritalStatus: "", 
+    nationalId: "", 
+    phoneNumber: "", 
+    email: "", 
+    residentialAddress: "", 
+    bloodGroup: "", 
+    allergies: "", 
+    chronicConditions: "", 
+    currentMedications: "", 
+    pastMedicalHistory: "", 
+    familyMedicalHistory: "", 
+    insuranceProvider: "", 
+    insurancePolicyNumber: "", 
+    nhifNumber: "", 
+    paymentPreference: "", 
+    nextOfKin: "",
+    nextOfKinRelatonship: "",
+    nextOfKinContact: "",
+    emergencyName: "",
+    emergencyRelatonship: "",
+    emergencyContact: "",
     registrationDate: new Date().toISOString().split("T")[0],
   });
 
   const [date, setDate] = useState<Date>();
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});// Required, must match paymentEnum values
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    console.log(formData)
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -97,7 +112,7 @@ const PersonalDetails = () => {
     setDate(selectedDate);
     setFormData((prevData) => ({
       ...prevData,
-      dob: selectedDate ? selectedDate.toISOString().split("T")[0] : null,
+      dateOfBirth: selectedDate ? selectedDate.toISOString().split("T")[0] : "",
     }));
   };
 
@@ -105,6 +120,7 @@ const PersonalDetails = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
     setErrors({});
 
     // validation with zod
@@ -211,7 +227,7 @@ const PersonalDetails = () => {
                     />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="border-none w-[370px] font-poppins ">
-                  {["Male", "female"].map(
+                  {["Male", "Female"].map(
                     (gender) => (
                       <DropdownMenuItem
                         key={gender}
@@ -336,9 +352,9 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Emergency Contact</label>
               <Input
-                name="address"
+                name="emergencyName"
                 onChange={handleInputChange}
-                value={formData.residentialAddress}
+                value={formData.emergencyName}
                 className="mt-2 w-2/3"
               />
             </div>
@@ -356,8 +372,8 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Emergency Contact Relation</label>
               <Input
-                name="postalCode"
-                value={formData.pastMedicalHistory}
+                name="emergencyRelatonship"
+                value={formData.emergencyRelatonship}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -367,7 +383,7 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Home Address</label>
               <Input
-                name="phone"
+                name="residentialAddress"
                 value={formData.residentialAddress}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
@@ -376,7 +392,8 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Emergency Contact Phone</label>
               <Input
-                name="secondaryAddress"
+                name="emergencyContact"
+                value={formData.emergencyContact}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -495,7 +512,7 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Payment Preference </label>
               <Input
-                name="insuranceProvider"
+                name="paymentPreference"
                 placeholder="Cash, Insurance, Mobile Money, etc."
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
@@ -507,7 +524,7 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Insurance Provider Number</label>
               <Input
-                name="insuranceNumber"
+                name="insurancePolicyNumber"
                 value={formData.insurancePolicyNumber}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
@@ -526,7 +543,7 @@ const PersonalDetails = () => {
             </div>
           </div>
         </div>
-        <hr className="mt-7<hr className="mt-7" />" />
+        <hr className="mt-7"/>
         {/* Next of kin Section */}
         <h1 className="text-xl">Next of Kin</h1>
         <div className="flex flex-row gap-5 items-start">
@@ -534,8 +551,8 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Full Name</label>
               <Input
-                name="insuranceProvider"
-                value={formData.ne}
+                name="nextOfKin"
+                value={formData.nextOfKin}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -545,7 +562,8 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Relationship to Patient</label>
               <Input
-                name="insuranceNumber"
+                name="nextOfKinRelatonship"
+                value={formData.nextOfKinRelatonship}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
@@ -555,7 +573,8 @@ const PersonalDetails = () => {
             <div className="flex w-full items-center">
               <label className="w-1/3">Contact Information</label>
               <Input
-                name="insuranceNumber"
+                name="nextOfKinContact"
+                value={formData.nextOfKinContact}
                 onChange={handleInputChange}
                 className="mt-2 w-2/3"
               />
