@@ -41,5 +41,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.drizzle.config.json
+drizzle.config.json
 .env.local
