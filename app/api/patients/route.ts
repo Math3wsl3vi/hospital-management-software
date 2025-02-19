@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     // Check for existing phone/email/nationalId to avoid duplicates
     const existingPatient = await db.query.patients.findFirst({
       where: or(
-        eq(patients.phoneNumber, body.phoneNumber), // Ensure this matches schema
+        eq(patients.phoneNumber, body.phoneNumber),
         eq(patients.email, body.email),
         eq(patients.nationalId, body.nationalId)
       ),
@@ -50,8 +50,9 @@ export async function POST(req: Request) {
       emergencyContact: body.emergencyContact ?? null,
       registrationDate: new Date().toISOString(),
     }).returning();
+  console.log(result)
 
-    return NextResponse.json({ success: true, data: result }, { status: 201 });
+    return NextResponse.json({message: 'Doctor added successfully'}, {status:201});
 
   } catch (error) {
     console.error("Error inserting patient:", error);

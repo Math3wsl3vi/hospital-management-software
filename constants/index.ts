@@ -29,9 +29,9 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Laboratory',
-        route:'/lab',
-        imgUrl:'/images/lab.png'
+        label: 'Patients',
+        route:'/patient-list',
+        imgUrl:'/images/examination.png'
 
     },
     {

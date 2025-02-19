@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader";
 
 export default function HomePage() {
   const router = useRouter();
@@ -31,5 +32,5 @@ export default function HomePage() {
     }
   }, [router]);
 
-  return <h1>You are not authorized to view this page kindly go back. Please wait while being redirected to the auth page.</h1>; // Placeholder while redirecting
+  return <h1>You are not authorized to view this page kindly go back. Please wait while being redirected to the auth page.<Loader/></h1>; // Placeholder while redirecting
 }

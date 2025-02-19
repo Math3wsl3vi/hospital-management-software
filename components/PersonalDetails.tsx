@@ -125,7 +125,9 @@ const PersonalDetails = () => {
 
     // validation with zod
     const result = personalDetailsSchema.safeParse(formData);
+    console.log('success', result)
     if (!result.success) {
+     console.log('error validating', result.error.issues)
       const formattedErrors: { [key: string]: string } = {};
       result.error.issues.forEach((issue) => {
         formattedErrors[issue.path[0]] = issue.message;
@@ -511,13 +513,33 @@ const PersonalDetails = () => {
             </div>
             <div className="flex w-full items-center">
               <label className="w-1/3">Payment Preference </label>
-              <Input
-                name="paymentPreference"
-                placeholder="Cash, Insurance, Mobile Money, etc."
-                onChange={handleInputChange}
-                className="mt-2 w-2/3"
-                value={formData.paymentPreference}
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Input
+                    name="paymentPreference"
+                    onChange={handleInputChange}
+                    value={formData.paymentPreference}
+                    className="mt-2 w-2/3 text-left"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="border-none w-[370px] font-poppins ">
+                  {["Cash", "Insurance", "Mobile Money", "Bank Transfer"].map(
+                    (pay) => (
+                      <DropdownMenuItem
+                        key={pay}
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            paymentPreference: pay,
+                          }))
+                        }
+                      >
+                        {pay}
+                      </DropdownMenuItem>
+                    )
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           <div className="w-1/3">
