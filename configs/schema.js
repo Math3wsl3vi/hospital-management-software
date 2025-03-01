@@ -33,7 +33,7 @@ export const patients = pgTable("patients", {
   familyMedicalHistory: text("family_medical_history"),
   insuranceProvider: varchar("insurance_provider", { length: 100 }),
   insurancePolicyNumber: varchar("insurance_policy_number", { length: 50 }),
-  nhifNumber: varchar("nhif_number", { length: 20 }).unique(),
+  nhifNumber: varchar("nhif_number", { length: 20 }),
   paymentPreference: paymentEnum("payment_preference").notNull(),
   registrationDate: date("registration_date").defaultNow(),
 }

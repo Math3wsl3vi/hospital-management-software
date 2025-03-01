@@ -1,0 +1,1 @@
+ALTER TABLE "patients" DROP CONSTRAINT "patients_nhif_number_unique";
