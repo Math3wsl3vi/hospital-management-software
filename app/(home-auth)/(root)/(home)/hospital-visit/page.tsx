@@ -1,50 +1,104 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { userData } from "../../../../../lib/data";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/stores/UseStore";
+import { collection, getDocs } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
+import { db } from "@/configs/firebase.config";
 
-interface User {
-  id: number;
-  name: string;
-  phone: string;
-  sex: string;
-  dob: string;
-}
+
+type PatientData = {
+  id: string;
+  nationalId: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  bloodGroup: string;
+  phoneNumber: string;
+  name?: string;
+  phone?: string;
+  sex?: string;
+  dob?: string;
+};
+
+
 
 const HospitalVisit = () => {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredResults, setFilteredResults] = useState<User[]>([]);
+  const [filteredResults, setFilteredResults] = useState<PatientData[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null); // Store selected payment method
   const { selectedUser, setSelectedUser } = useUserStore();
+  const [patients, setPatients] = useState<PatientData[]>([]);
+  // const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { toast } = useToast();
+  // const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "patients"));
+        const patientList: PatientData[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          nationalId: doc.data().nationalId || "",
+          firstName: doc.data().firstName || "",
+          lastName: doc.data().lastName || "",
+          dateOfBirth: doc.data().dateOfBirth || "",
+          gender: doc.data().gender || "",
+          bloodGroup: doc.data().bloodGroup || "",
+          phoneNumber: doc.data().phoneNumber || "",
+          name: `${doc.data().firstName} ${doc.data().lastName}` || "",
+          phone: doc.data().phoneNumber || "",
+          sex: doc.data().gender || "",
+          dob: doc.data().dateOfBirth || "",
+        }));
+        
+        setPatients(patientList);
+      } catch (err) {
+        console.error("Error fetching patients:", err);
+        toast({ description: "Error fetching patients" });
+      }
+    };
+  
+    fetchPatients();
+  }, [toast]);
+  
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.trim().toLowerCase();
     setQuery(value);
-
-    if (value.trim() === "") {
+  
+    if (!value) {
       setFilteredResults([]);
-    } else {
-      const results = userData.filter(
-        (user) =>
-          user.name.toLowerCase().includes(value.toLowerCase()) ||
-          user.id.toString().includes(value)
-      );
-      setFilteredResults(results);
+      return;
     }
+  
+    const results = patients.filter(
+      (patient) =>
+        `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(value) ||
+        patient.nationalId.includes(value)
+    );
+  
+    setFilteredResults(results); 
   };
-
-  const handleSelect = (user: User) => {
-    setQuery(user.name);
-    setSelectedUser(user);
+  
+  const handleSelect = (user: PatientData) => {
+    setQuery(`${user.firstName} ${user.lastName}`);
+    setSelectedUser({
+      ...user,
+      id: Number(user.nationalId), 
+      name: `${user.firstName} ${user.lastName}`,
+      phone: user.phoneNumber,
+      sex: user.gender,
+      dob: user.dateOfBirth,
+    });
     setFilteredResults([]);
   };
-
   const handleContinue = () => {
     if (!selectedUser) {
       alert("Please select a patient before continuing.");
@@ -64,12 +118,12 @@ const HospitalVisit = () => {
           Welcome to the Hospital
         </h1>
         <p className="text-center text-gray-400 mt-3">
-          Enter the {"patient's"} Service Number/Name
+          Enter the {"patient's"} Service Id/Name
         </p>
         <div className="mt-10 flex justify-center items-center gap-10 flex-col">
           {/* Patient Search */}
           <Input
-            placeholder="Enter Service Number"
+            placeholder="Enter Id Number"
             value={query}
             onChange={handleSearch}
             className="font-poppins text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2"
@@ -82,8 +136,8 @@ const HospitalVisit = () => {
                   onClick={() => handleSelect(user)}
                   className="p-2 cursor-pointer flex flex-row gap-2 items-center justify-between"
                 >
-                  <p>{user.name}</p>
-                  <p>{user.id}</p>
+                  <p>{user.firstName}</p>
+                  <p>{user.nationalId}</p>
                 </div>
               ))}
             </div>

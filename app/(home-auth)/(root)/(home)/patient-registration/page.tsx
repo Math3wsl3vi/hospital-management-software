@@ -1,4 +1,4 @@
-import PersonalDetails from '@/components/PersonalDetails'
+import PatientForm from '@/components/PatientForm'
 import React from 'react'
 
 const PatientRegistration = () => {
@@ -12,7 +12,7 @@ const PatientRegistration = () => {
       </div>
         {/* top part */}
         {/* personal details */}
-        <PersonalDetails/>
+      <PatientForm/>
         {/* address */}
         {/* next of kin */}
     </div>

@@ -43,3 +43,6 @@ next-env.d.ts
 
 drizzle.config.json
 .env.local
+
+firebase.config.js
+configs/firebase.config.js

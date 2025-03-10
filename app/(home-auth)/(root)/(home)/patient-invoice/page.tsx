@@ -80,23 +80,23 @@ const PatientInvoice = () => {
         <h1 className="text-green-1 text-lg mb-4">PATIENT DETAILS</h1>
         <div className="flex flex-row justify-between items-center">
           <div className="text-xl">
-            <p>
-              <span className="font-semibold">Name:</span> {selectedUser?.name}{" "}
+            <p className="capitalize text-lg">
+              <span className="font-semibold ">Name:</span> {selectedUser?.name}{" "}
             </p>
-            <p>
+            <p className="capitalize text-lg">
               <span className="font-semibold">Age:</span> 23
             </p>
           </div>
           <div className="text-lg">
-            <p>
+            <p className="capitalize text-lg">
               <span className="font-semibold">Patient Id:</span>{" "}
               {selectedUser?.id}
             </p>
-            <p>
+             <p className="capitalize text-lg">
               <span className="font-semibold">Insurance Provider:</span>{" "}
               {selectedUser?.name}
             </p>
-            <p>
+              <p className="capitalize text-lg">
               <span className="font-semibold">insurance Number:</span>{" "}
               {selectedUser?.id}
             </p>
