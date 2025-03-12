@@ -12,7 +12,7 @@ export const sidebarLinks = [
     },
     {
         label: 'Department',
-        route:'/pharmacy',
+        route:'/departments',
         imgUrl:'/images/corporation.png'
 
     },
@@ -48,7 +48,7 @@ export const sidebarLinks = [
     },
     {
         label: 'Settings',
-        route:'/settings',
+        route:'/settings-page',
         imgUrl:'/images/settings.png'
 
     },
@@ -72,13 +72,13 @@ export const ItemCard = [
         id:'3',
         name: 'Appointments',
         icon: '/images/nurse.png',
-        route:'/nurses',
+        route:'/appointments',
     },
     {
         id:'4',
         name: 'Bed Management',
         icon: '/images/pharmacist.png',
-        route:'/pharmacists',
+        route:'/ward',
     },
     {
         id:'5',

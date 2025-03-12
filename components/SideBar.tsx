@@ -42,13 +42,16 @@ const SideBar = () => {
                 <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
                   </DropdownMenuItem>
                   <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
-                    <Link href={'/'}>Triage</Link>
+                    <Link href={'/hospital-visit'}>Reception</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
-                    <Link href={'/'}>Consultation</Link>
+                    <Link href={'/triage'}>Triage</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
-                    <Link href={'/'}>Lab</Link>
+                    <Link href={'/consultation'}>Consultation</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
+                    <Link href={'/lab'}>Lab</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
                     <Link href={'/'}>Pharmacy</Link>
