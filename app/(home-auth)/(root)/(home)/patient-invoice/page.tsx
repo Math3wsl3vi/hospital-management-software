@@ -222,7 +222,7 @@ const PatientInvoice = () => {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Payment Details</DialogTitle>
+                  <DialogTitle>Payment Confirmation</DialogTitle>
                   <DialogDescription>
                     <div className="flex justify-center items-center">
                     <Image src='/images/success.gif' alt="success" width={200} height={200}/>
