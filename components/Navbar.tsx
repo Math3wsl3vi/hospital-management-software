@@ -15,7 +15,7 @@ const Navbar = () => {
     <div className="w-full h-14 bg-slate-50 flex items-center ">
       <div className="w-[250px] h-full bg-[#21263c]">
         <div className="rounded-bl-xl bg-[#181c2e] w-[250px] h-full pl-4 pt-4">
-          <Link href={'/'} className="text-2xl font-poppins text-white">HMS</Link>
+          <Link href={'/'} className="text-xl font-poppins text-white uppercase">M e d i S y n c</Link>
         </div>
       </div>
       <div className="flex-1 items-center flex justify-between px-5 gap-10">
@@ -44,14 +44,14 @@ const Navbar = () => {
               />
             </div>
 
-            <div className="cursor-pointer hover:bg-white hover:border hover:p-2 hover:rounded-full">
+            <Link href={'/settings-page'} className="cursor-pointer hover:bg-white hover:border hover:p-2 hover:rounded-full">
               <Image
                 src="/images/settings.png"
                 alt="image"
                 width={17}
                 height={17}
               />
-            </div>
+            </Link>
 
             <Link
             href={'/sign-in'}

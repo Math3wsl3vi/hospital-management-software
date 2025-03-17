@@ -24,6 +24,10 @@ const initialBeds: Bed[] = [
   { id: "B003", ward: "ICU", status: "Occupied", patient: "Jane Smith" },
   { id: "B004", ward: "ICU", status: "Available" },
   { id: "B005", ward: "Pediatrics", status: "Occupied", patient: "Baby Alex" },
+  { id: "B006", ward: "Psych", status: "Occupied", patient: "Alfredo Pasta" },
+  { id: "B007", ward: "Pediatrics", status: "Occupied", patient: "Levi Mathews" },
+  { id: "B008", ward: "Martenitiy", status: "Occupied", patient: "Donald Duck" },
+
 ];
 
 const WardBedManagement = () => {

@@ -104,10 +104,6 @@ const HospitalVisit = () => {
       alert("Please select a patient before continuing.");
       return;
     }
-    if (!paymentMethod) {
-      alert("Please select a payment method.");
-      return;
-    }
     setIsOpen(true);
   };
 
@@ -144,7 +140,7 @@ const HospitalVisit = () => {
           )}
           {/* new patient */}
           <div className="w-full flex flex-col gap-5 items-center">
-            <h1>Register a New Patient</h1>
+            <h1>New Patient Registration</h1>
             <div className="w-full flex items-center justify-center">
               <Button 
               onClick={()=>router.push('patient-registration')}
@@ -155,8 +151,8 @@ const HospitalVisit = () => {
           </div>
 
           {/* Payment Method Selection */}
-          <h1 className="text-lg font-semibold">Select Payment Method</h1>
-          <div className="flex flex-row gap-2">
+          <h1 className="text-lg font-semibold hidden">Select Payment Method</h1>
+          <div className="flex-row gap-2 hidden">
             <button
               className={`p-3 border rounded-md w-full ${
                 paymentMethod === "Insurance" ? "bg-green-1 text-white" : "bg-gray-100"
@@ -215,10 +211,10 @@ const HospitalVisit = () => {
                 </div>
               </div>
               {/* Selected Payment Method */}
-              <div className="gap-2 flex flex-col">
+              {/* <div className="gap-2 flex flex-col">
                 <label>Payment Method</label>
                 <div className="border p-2 rounded-md">{paymentMethod}</div>
-              </div>
+              </div> */}
             </div>
 
             {/* Continue to Triage */}

@@ -1,6 +1,7 @@
 import AppointmentTable from '@/components/AppointmentTable'
 // import BigCalender from '@/components/BigCalender'
 import DoctorAvailability from '@/components/DoctorAvailability'
+import HomeCalendar from '@/components/HomeCalendar'
 import ItemCards from '@/components/ItemCards'
 import NoticeBoard from '@/components/NoticeBoard'
 import React from 'react'
@@ -8,6 +9,9 @@ import React from 'react'
 const HomePage = () => {
   return (
     <div className='flex flex-col gap-10'>
+      <div>
+        <HomeCalendar/>
+      </div>
       <div className='w-full'>
       {/* item cards */}
       <ItemCards/>

@@ -135,8 +135,6 @@ const Doctor = () => {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Secialization</TableHead>
-                <TableHead>Rank</TableHead>
-                <TableHead>Unit</TableHead>
                 <TableHead>phone</TableHead>
                 <TableHead>Gender</TableHead>
                 <TableHead>Status</TableHead>
@@ -147,8 +145,6 @@ const Doctor = () => {
                   <TableRow key={index} className="capitalize">
                     <TableCell>{doc.name}</TableCell>
                     <TableCell>{doc.specialization}</TableCell>
-                    <TableCell>{doc.rank}</TableCell>
-                    <TableCell>{doc.unit}</TableCell>
                     <TableCell>{doc.phone}</TableCell>
                     <TableCell>{doc.sex}</TableCell>
                     <TableCell>{doc.status}</TableCell>

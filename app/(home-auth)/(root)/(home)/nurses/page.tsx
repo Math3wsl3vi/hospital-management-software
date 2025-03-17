@@ -129,8 +129,6 @@ const Nurses = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Secialization</TableHead>
-                <TableHead>Unit</TableHead>
                 <TableHead>phone</TableHead>
                 <TableHead>Gender</TableHead>
                 <TableHead>Status</TableHead>
@@ -140,8 +138,6 @@ const Nurses = () => {
                 {paginatedData.map((doc, index)=> (
                   <TableRow key={index} className="capitalize">
                     <TableCell>{doc.name}</TableCell>
-                    <TableCell>{doc.unit}</TableCell>
-                    <TableCell>{doc.rank}</TableCell>
                     <TableCell>{doc.phone}</TableCell>
                     <TableCell>{doc.sex}</TableCell>
                     <TableCell>{doc.status}</TableCell>

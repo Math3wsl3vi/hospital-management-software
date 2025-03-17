@@ -75,7 +75,7 @@ const PatientInvoice = () => {
       };
 
       await addDoc(collection(db, "invoices"), invoiceData);
-      toast({description:"Invoice saved successfully!"});
+      toast({description:"Medication sent to the app. Login to view!"});
     } catch (error) {
       console.error("Error saving invoice: ", error);
       alert("Failed to save invoice.");

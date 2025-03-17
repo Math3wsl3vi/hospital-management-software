@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/configs/firebase.config";
+import { useRouter } from "next/navigation";
 
 // Define the initial state for the form
 const initialFormData = {
@@ -45,6 +46,7 @@ export default function PatientForm() {
   const [formData, setFormData] = useState(initialFormData);
   const [loading, setLoading] = useState(false); // ✅ Loading state
   const [error, setError] = useState<string | null>(null); // ✅ Error state
+  const router = useRouter()
 
   // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -62,6 +64,7 @@ export default function PatientForm() {
       toast({ title: "Success", description: "Patient Added Successfully" });
       console.log(docRef)
       setFormData(initialFormData); // Reset form
+      router.push('/hospital-visit')
     } catch (err) {
       console.error("Error adding document:", err);
       setError("Failed to save patient details. Please try again.");
