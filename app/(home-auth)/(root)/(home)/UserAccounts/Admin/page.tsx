@@ -22,7 +22,7 @@ const HomePage = () => {
          <BigCalender/>
          </div> */}
       {/* noticeboard */}
-      <div>
+      <div className=''>
       <NoticeBoard/>
       </div>
       </div>

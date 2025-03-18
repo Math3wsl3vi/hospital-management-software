@@ -81,7 +81,7 @@ const DoctorNotesResults = () => {
         <div className="mt-3 border rounded-md min-h-44 p-2">
           {pharmacistData.map((med, index) => (
             <div key={index} className="flex flex-row gap-5 border-b p-2 justify-between">
-              <span>{med.name}</span>
+              <span className="capitalize">{med.name}</span>
               <div className="ml-20 flex flex-row gap-10">
                 <Input
                   placeholder="Dosage (e.g. 500mg/10ml)"

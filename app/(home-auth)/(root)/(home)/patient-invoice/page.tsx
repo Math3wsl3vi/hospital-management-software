@@ -1,6 +1,6 @@
 "use client";
 import { useUserStore } from "@/stores/UseStore";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import { useDocNotesStore } from "@/stores/MedicationStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { collection, addDoc, Timestamp } from "firebase/firestore"; // Firestore functions
+import { doc, setDoc, Timestamp } from "firebase/firestore"; 
 import { db } from "@/configs/firebase.config";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -33,6 +33,7 @@ const PatientInvoice = () => {
   const selectedUser = useUserStore((state) => state.selectedUser);
   const { docNotes } = useDocNotesStore();
   const { toast } = useToast()
+  const invoiceRef = useRef(null)
 
   // Parse medication data
   const medications = docNotes.medication?.split(",").map((med) => {
@@ -60,10 +61,19 @@ const PatientInvoice = () => {
 
   // Save invoice to Firebase
   const saveInvoice = async () => {
+  
+
     try {
+      if (!selectedUser?.email) {
+        alert("No patient email found!");
+        console.log("Selected User:", selectedUser);
+        return;
+      }
+  
       const invoiceData = {
         patientId: selectedUser?.id,
         patientName: selectedUser?.name,
+        patientEmail: selectedUser?.email, // Store the email
         medications: medications?.map((med, index) => ({
           name: med.name,
           dosage: med.dosage,
@@ -73,9 +83,11 @@ const PatientInvoice = () => {
         totalAmount: total,
         createdAt: Timestamp.now(),
       };
-
-      await addDoc(collection(db, "invoices"), invoiceData);
-      toast({description:"Medication sent to the app. Login to view!"});
+  
+      // Save invoice with email as document ID
+      await setDoc(doc(db, "invoices", selectedUser.email), invoiceData);
+  
+      toast({ description: "Medication sent to the app. Login to view!" });
     } catch (error) {
       console.error("Error saving invoice: ", error);
       alert("Failed to save invoice.");
@@ -83,7 +95,7 @@ const PatientInvoice = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container print:block">
       {/* Invoice Header */}
       <div className="flex flex-row justify-between items-center">
         <div>
@@ -203,17 +215,20 @@ const PatientInvoice = () => {
 
       {/* Totals */}
       <div className="flex items-end justify-end">
-        <div className="w-1/3 flex flex-col gap-2">
+        <div className="w-1/2 flex flex-col gap-2">
           <Table>
             <TableRow>
               <TableCell>Total (Ksh)</TableCell>
               <TableCell>{total.toFixed(2)}</TableCell>
             </TableRow>
           </Table>
-          <div className="flex justify-between items-center w-full gap-5 mt-10">
-            <Button className="bg-green-1 w-1/2" onClick={saveInvoice}>
+          <div className="flex justify-between items-center w-full gap-5 mt-10 print:hidden">
+            <Button className="bg-green-1 w-1/3" onClick={saveInvoice}>
               Add medication to our App
             </Button>
+            <Button onClick={() => window.print()} className="bg-green-1 text-white w-1/3">
+            Print Invoice
+          </Button>
             {/* dialog */}
             <div className="w-full border bg-green-1 rounded-md">
             <Dialog>

@@ -9,6 +9,8 @@ const TriageInput = ({
     phone: string;
     sex: string;
     dob: string;
+    email:string;
+    bloodGroup:string;
   } | null;
 }) => {
   return (
@@ -26,6 +28,12 @@ const TriageInput = ({
             {selectedUser?.id || "N/A"}
           </div>
         </div>
+        <div className="gap-2 flex flex-col w-1/2">
+          <label htmlFor="service">Blood Group</label>
+          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
+            {selectedUser?.bloodGroup || "N/A"}
+          </div>
+        </div>
       </div>
       <div className="flex gap-10 w-full">
         <div className="gap-2 flex flex-col w-1/2">
@@ -38,6 +46,12 @@ const TriageInput = ({
           <label htmlFor="service">Sex</label>
           <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
             {selectedUser?.sex || "N/A"}
+          </div>
+        </div>
+        <div className="gap-2 flex flex-col w-1/2">
+          <label htmlFor="service">Email</label>
+          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
+            {selectedUser?.email || "N/A"}
           </div>
         </div>
       </div>

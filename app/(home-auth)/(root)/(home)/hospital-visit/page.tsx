@@ -23,6 +23,7 @@ type PatientData = {
   phone?: string;
   sex?: string;
   dob?: string;
+  email:string;
 };
 
 
@@ -56,6 +57,7 @@ const HospitalVisit = () => {
           phone: doc.data().phoneNumber || "",
           sex: doc.data().gender || "",
           dob: doc.data().dateOfBirth || "",
+          email:doc.data().email || ""
         }));
         
         setPatients(patientList);
@@ -96,6 +98,7 @@ const HospitalVisit = () => {
       phone: user.phoneNumber,
       sex: user.gender,
       dob: user.dateOfBirth,
+      email: user.email
     });
     setFilteredResults([]);
   };
@@ -190,12 +193,16 @@ const HospitalVisit = () => {
           <DialogContent className="font-poppins">
             <h1 className="font-poppins text-center mb-5 text-lg">
               Welcome to Lanet Regional Hospital{" "}
-              <span className="font-semibold">
+              <span className="font-semibold capitalize">
                  {selectedUser?.name}
               </span>
             </h1>
             <div className="flex flex-col gap-5">
               {/* Patient Details */}
+              <div className="gap-2 flex flex-col">
+                <label>Email</label>
+                <div className="border p-2 rounded-md">{selectedUser?.email}</div>
+              </div>
               <div className="gap-2 flex flex-col">
                 <label>National Id Number</label>
                 <div className="border p-2 rounded-md">{selectedUser?.id}</div>

@@ -7,6 +7,8 @@ interface User {
   phone: string;
   sex: string;
   dob: string;
+  email:string;
+  bloodGroup:string;
 }
 
 interface UserState {
