@@ -104,7 +104,7 @@ useEffect(() => {
         </div>
       </div>
       <div className="my-5 w-full flex justify-end">
-        <Button onClick={handleContinue} className="bg-green-500">Proceed to Consultation</Button>
+        <Button onClick={handleContinue} className="bg-green-1">Proceed to Consultation</Button>
       </div>
     </div>
   );

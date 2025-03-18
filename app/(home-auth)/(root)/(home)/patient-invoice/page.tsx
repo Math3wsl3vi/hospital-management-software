@@ -14,7 +14,7 @@ import { useDocNotesStore } from "@/stores/MedicationStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { doc, setDoc, Timestamp } from "firebase/firestore"; 
+import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore"; 
 import { db } from "@/configs/firebase.config";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -45,6 +45,9 @@ const PatientInvoice = () => {
   const [medicationAmounts, setMedicationAmounts] = useState(
     medications?.map(() => ({ amount: 0 })) || []
   );
+  const [medicationQuantities, setMedicationQuantities] = useState(
+    medications?.map(() => ({ quantity: "" })) || []
+  );
 
   const consultationFee = 250;
 
@@ -59,40 +62,64 @@ const PatientInvoice = () => {
     setMedicationAmounts(updatedAmounts);
   };
 
-  // Save invoice to Firebase
-  const saveInvoice = async () => {
-  
+  const handleQuantityChange = (index: number, value: string) => {
+    const updatedQuantities = [...medicationQuantities];
+    updatedQuantities[index].quantity = value; // Store as string
+    setMedicationQuantities(updatedQuantities);
+  };
 
-    try {
-      if (!selectedUser?.email) {
-        alert("No patient email found!");
-        console.log("Selected User:", selectedUser);
-        return;
-      }
-  
-      const invoiceData = {
-        patientId: selectedUser?.id,
-        patientName: selectedUser?.name,
-        patientEmail: selectedUser?.email, // Store the email
-        medications: medications?.map((med, index) => ({
+  // Save invoice to Firebase
+
+
+
+const saveInvoice = async () => {
+  try {
+    if (!selectedUser?.email) {
+      alert("No patient email found!");
+      console.log("Selected User:", selectedUser);
+      return;
+    }
+
+    const invoiceRef = doc(db, "invoices", selectedUser.email.replace(/[@.]/g, "_"));
+
+    // Store Invoice Metadata (Ensuring it doesn’t overwrite existing data)
+    await setDoc(invoiceRef, {
+      patientId: selectedUser?.id,
+      patientName: selectedUser?.name,
+      patientEmail: selectedUser?.email,
+      consultationFee,
+      totalAmount: total,
+      createdAt: Timestamp.now(),
+    }, { merge: true });
+
+    // Generate a timestamp-based document ID (for grouping)
+    const entryTimestamp = Timestamp.now();
+    const medicationsCollection = collection(invoiceRef, "medications");
+    const entryRef = doc(medicationsCollection, entryTimestamp.toMillis().toString()); // Unique ID from timestamp
+
+    // Store medications under the same timestamp group
+    await Promise.all(
+      medications.map(async (med, index) => {
+        await addDoc(collection(entryRef, "items"), {
           name: med.name,
           dosage: med.dosage,
+          frequency: med.frequency,
+          duration: med.duration,
           amount: medicationAmounts[index]?.amount || 0,
-        })),
-        consultationFee,
-        totalAmount: total,
-        createdAt: Timestamp.now(),
-      };
+          quantity: medicationQuantities[index]?.quantity || "0",
+          createdAt: entryTimestamp, // Ensure all have the same timestamp
+        });
+      })
+    );
+
+    toast({ description: "Medication sent to the app. Login to view!" });
+  } catch (error) {
+    console.error("Error saving invoice: ", error);
+    alert("Failed to save invoice.");
+  }
+};
+
   
-      // Save invoice with email as document ID
-      await setDoc(doc(db, "invoices", selectedUser.email), invoiceData);
-  
-      toast({ description: "Medication sent to the app. Login to view!" });
-    } catch (error) {
-      console.error("Error saving invoice: ", error);
-      alert("Failed to save invoice.");
-    }
-  };
 
   return (
     <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container print:block">
@@ -177,40 +204,47 @@ const PatientInvoice = () => {
 
       {/* Medication Table */}
       <div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>#</TableHead>
-              <TableHead>Medication</TableHead>
-              <TableHead>Dosage</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Subtotal</TableHead>
-              <TableHead>Amount</TableHead>
+         {/* Medication Table */}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>#</TableHead>
+            <TableHead>Medication</TableHead>
+            <TableHead>Dosage</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead>Subtotal</TableHead>
+            <TableHead>Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {medications?.map((med, index) => (
+            <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>{med.name}</TableCell>
+              <TableCell>{med.dosage}</TableCell>
+              <TableCell className="w-[200px]">
+                <Input
+                  placeholder="Quantity"
+                    value={medicationQuantities[index]?.quantity || ""}
+                    onChange={(e) => handleQuantityChange(index, e.target.value)}
+                />
+              </TableCell>
+              <TableCell className="w-[200px]">
+                <Input
+                  placeholder="Subtotal"
+                  type="number"
+                  value={medicationAmounts[index]?.amount || ""}
+                  onChange={(e) => handleAmountChange(index, e.target.value)}
+                />
+              </TableCell>
+              <TableCell className="w-[200px]">
+                {medicationAmounts[index]?.amount.toFixed(2)}
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {medications?.map((med, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{med.name}</TableCell>
-                <TableCell>{med.dosage}</TableCell>
-                <TableCell className="w-[200px]">
-                  <Input placeholder="Quantity" />
-                </TableCell>
-                <TableCell className="w-[200px]">
-                  <Input
-                    placeholder="Subtotal"
-                    value={medicationAmounts[index]?.amount || ""}
-                    onChange={(e) => handleAmountChange(index, e.target.value)}
-                  />
-                </TableCell>
-                <TableCell className="w-[200px]">
-                  {medicationAmounts[index]?.amount.toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+          ))}
+        </TableBody>
+      </Table>
+
       </div>
 
       {/* Totals */}

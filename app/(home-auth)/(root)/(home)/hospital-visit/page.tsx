@@ -125,7 +125,7 @@ const HospitalVisit = () => {
             placeholder="Enter Id Number"
             value={query}
             onChange={handleSearch}
-            className="font-poppins text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2"
+            className="font-poppins text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2 capitalize"
           />
           {filteredResults.length > 0 && (
             <div className="w-full md:w-3/4 bg-white border rounded-md overflow-y-auto">
