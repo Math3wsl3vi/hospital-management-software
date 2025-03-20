@@ -5,68 +5,112 @@ import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/stores/UseStore";
-import { userData } from "@/lib/data";
+import { collection, getDocs } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
+import { db } from "@/configs/firebase.config";
 
-interface User {
-  id: number;
-  name: string;
-  unit: string;
-  rank: string;
-  phone: string;
-  sex: string;
-  dob: string;
-}
 
-const ReceptionUser = () => {
+type PatientData = {
+  id: string;
+  nationalId: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  bloodGroup: string;
+  phoneNumber: string;
+  name?: string;
+  phone?: string;
+  sex?: string;
+  dob?: string;
+  email:string;
+  insuranceProvider:string;
+  insurancePolicyNumber:string;
+};
+
+
+
+const HospitalVisit = () => {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredResults, setFilteredResults] = useState<User[]>([]);
+  const [filteredResults, setFilteredResults] = useState<PatientData[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null); // Store selected payment method
   const { selectedUser, setSelectedUser } = useUserStore();
+  const [patients, setPatients] = useState<PatientData[]>([]);
+  // const [loading, setLoading] = useState(true);
   const router = useRouter();
-    const [user, setUser] = useState(null);
-  
-    useEffect(() => {
-      const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-      if (!storedUser || storedUser.role !== "reception" || storedUser.role !== 'admin') {
-        router.push("/sign-in"); 
-      } else {
-        setUser(storedUser);
+  const { toast } = useToast();
+  // const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "patients"));
+        const patientList: PatientData[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          nationalId: doc.data().nationalId || "",
+          firstName: doc.data().firstName || "",
+          lastName: doc.data().lastName || "",
+          dateOfBirth: doc.data().dateOfBirth || "",
+          gender: doc.data().gender || "",
+          bloodGroup: doc.data().bloodGroup || "",
+          phoneNumber: doc.data().phoneNumber || "",
+          name: `${doc.data().firstName} ${doc.data().lastName}` || "",
+          phone: doc.data().phoneNumber || "",
+          sex: doc.data().gender || "",
+          dob: doc.data().dateOfBirth || "",
+          email:doc.data().email || "",
+          insuranceProvider: doc.data().insuranceProvider || "",
+          insurancePolicyNumber: doc.data().insurancePolicyNumber || "",
+        }));
+        
+        setPatients(patientList);
+      } catch (err) {
+        console.error("Error fetching patients:", err);
+        toast({ description: "Error fetching patients" });
       }
-    }, [router]);
+    };
   
-    if (!user) return <p>Loading...</p>;
+    fetchPatients();
+  }, [toast]);
   
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.trim().toLowerCase();
     setQuery(value);
-
-    if (value.trim() === "") {
+  
+    if (!value) {
       setFilteredResults([]);
-    } else {
-      const results = userData.filter(
-        (user) =>
-          user.name.toLowerCase().includes(value.toLowerCase()) ||
-          user.id.toString().includes(value)
-      );
-      setFilteredResults(results);
+      return;
     }
+  
+    const results = patients.filter(
+      (patient) =>
+        `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(value) ||
+        patient.nationalId.includes(value)
+    );
+  
+    setFilteredResults(results); 
   };
-
-  const handleSelect = (user: User) => {
-    setQuery(user.name);
-    setSelectedUser(user);
+  
+  const handleSelect = (user: PatientData) => {
+    setQuery(`${user.firstName} ${user.lastName}`);
+    setSelectedUser({
+      ...user,
+      id: Number(user.nationalId), 
+      name: `${user.firstName} ${user.lastName}`,
+      phone: user.phoneNumber,
+      sex: user.gender,
+      dob: user.dateOfBirth,
+      email: user.email,
+      insuranceProvider:user.insuranceProvider,
+      insurancePolicyNumber:user.insurancePolicyNumber
+    });
     setFilteredResults([]);
   };
-
   const handleContinue = () => {
     if (!selectedUser) {
       alert("Please select a patient before continuing.");
-      return;
-    }
-    if (!paymentMethod) {
-      alert("Please select a payment method.");
       return;
     }
     setIsOpen(true);
@@ -79,15 +123,15 @@ const ReceptionUser = () => {
           Welcome to the Hospital
         </h1>
         <p className="text-center text-gray-400 mt-3">
-          Enter the {"patient's"} Service Number/Name
+          Enter the {"patient's"} Service Id/Name
         </p>
         <div className="mt-10 flex justify-center items-center gap-10 flex-col">
           {/* Patient Search */}
           <Input
-            placeholder="Enter Service Number"
+            placeholder="Enter Id Number"
             value={query}
             onChange={handleSearch}
-            className="font-poppins text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2"
+            className="font-poppins text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2 capitalize"
           />
           {filteredResults.length > 0 && (
             <div className="w-full md:w-3/4 bg-white border rounded-md overflow-y-auto">
@@ -97,15 +141,15 @@ const ReceptionUser = () => {
                   onClick={() => handleSelect(user)}
                   className="p-2 cursor-pointer flex flex-row gap-2 items-center justify-between"
                 >
-                  <p>{user.name}</p>
-                  <p>{user.id}</p>
+                  <p>{user.firstName}</p>
+                  <p>{user.nationalId}</p>
                 </div>
               ))}
             </div>
           )}
           {/* new patient */}
           <div className="w-full flex flex-col gap-5 items-center">
-            <h1>Register a New Patient</h1>
+            <h1>New Patient Registration</h1>
             <div className="w-full flex items-center justify-center">
               <Button 
               onClick={()=>router.push('patient-registration')}
@@ -116,8 +160,8 @@ const ReceptionUser = () => {
           </div>
 
           {/* Payment Method Selection */}
-          <h1 className="text-lg font-semibold">Select Payment Method</h1>
-          <div className="flex flex-row gap-2">
+          <h1 className="text-lg font-semibold hidden">Select Payment Method</h1>
+          <div className="flex-row gap-2 hidden">
             <button
               className={`p-3 border rounded-md w-full ${
                 paymentMethod === "Insurance" ? "bg-green-1 text-white" : "bg-gray-100"
@@ -155,14 +199,18 @@ const ReceptionUser = () => {
           <DialogContent className="font-poppins">
             <h1 className="font-poppins text-center mb-5 text-lg">
               Welcome to Lanet Regional Hospital{" "}
-              <span className="font-semibold">
-                {selectedUser?.rank} {selectedUser?.name}
+              <span className="font-semibold capitalize">
+                 {selectedUser?.name}
               </span>
             </h1>
             <div className="flex flex-col gap-5">
               {/* Patient Details */}
               <div className="gap-2 flex flex-col">
-                <label>Service Number</label>
+                <label>Email</label>
+                <div className="border p-2 rounded-md">{selectedUser?.email}</div>
+              </div>
+              <div className="gap-2 flex flex-col">
+                <label>National Id Number</label>
                 <div className="border p-2 rounded-md">{selectedUser?.id}</div>
               </div>
               <div className="flex flex-row gap-3 w-full">
@@ -175,20 +223,11 @@ const ReceptionUser = () => {
                   <div className="border p-2 rounded-md">{selectedUser?.dob}</div>
                 </div>
               </div>
-              <div className="gap-2 flex flex-col">
-                <label>Rank</label>
-                <div className="border p-2 rounded-md">{selectedUser?.rank}</div>
-              </div>
-              <div className="gap-2 flex flex-col">
-                <label>Unit</label>
-                <div className="border p-2 rounded-md">{selectedUser?.unit}</div>
-              </div>
-
               {/* Selected Payment Method */}
-              <div className="gap-2 flex flex-col">
+              {/* <div className="gap-2 flex flex-col">
                 <label>Payment Method</label>
                 <div className="border p-2 rounded-md">{paymentMethod}</div>
-              </div>
+              </div> */}
             </div>
 
             {/* Continue to Triage */}
@@ -213,4 +252,4 @@ const ReceptionUser = () => {
   );
 };
 
-export default ReceptionUser;
+export default HospitalVisit;

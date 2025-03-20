@@ -3,6 +3,7 @@ import History from "@/components/History";
 import TriageInput from "@/components/TriageInput";
 import Vitals from "@/components/Vitals";
 import { useUserStore } from "@/stores/UseStore";
+import { Suspense } from "react";
 
 const TriagePage = () => {
   const selectedUser = useUserStore((state) => state.selectedUser);
@@ -19,7 +20,10 @@ const TriagePage = () => {
       <TriageInput selectedUser={selectedUser} />
       <hr  className="my-7"/>
       <History/>
+      <Suspense fallback={<div>Loading...</div>}>
       <Vitals/>
+    </Suspense>
+     
       
     </div>
   );
