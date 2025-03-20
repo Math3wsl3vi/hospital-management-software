@@ -162,25 +162,28 @@ const PatientInvoice = () => {
         <h1 className="text-green-1 text-lg mb-4">PATIENT DETAILS</h1>
         <div className="flex flex-row justify-between items-center">
           <div className="text-xl">
-            <p className="capitalize text-lg">
-              <span className="font-semibold ">Name:</span> {selectedUser?.name}{" "}
+            <p className="capitalize">
+              <span className="font-semibold uppercase ">Name:</span> {selectedUser?.name}{" "}
             </p>
-            <p className="capitalize text-lg">
-              <span className="font-semibold">Age:</span> 23
+            <p className="capitalize">
+              <span className="font-semibold uppercase">Age:</span> 23
+            </p>
+            <p className="capitalize">
+              <span className="font-semibold uppercase ">Email:</span> {selectedUser?.email}{" "}
             </p>
           </div>
           <div className="text-lg">
-            <p className="capitalize text-lg">
-              <span className="font-semibold">Patient Id:</span>{" "}
+            <p className="capitalize">
+              <span className="font-semibold uppercase">National Id:</span>{" "}
               {selectedUser?.id}
             </p>
-            <p className="capitalize text-lg">
-              <span className="font-semibold">Insurance Provider:</span>{" "}
-              {selectedUser?.name}
+            <p className="capitalize">
+              <span className="font-semibold uppercase">Insurance Provider:</span>{" "}
+              {selectedUser?.insuranceProvider}
             </p>
-            <p className="capitalize text-lg">
-              <span className="font-semibold">insurance Number:</span>{" "}
-              {selectedUser?.id}
+            <p className="capitalize">
+              <span className="font-semibold uppercase">insurance Number:</span>{" "}
+              {selectedUser?.insurancePolicyNumber}
             </p>
           </div>
         </div>

@@ -85,13 +85,13 @@ export default function PatientForm() {
             <Input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} placeholder="Date of Birth"required />
           </div>
 
-          <select name="gender" value={formData.gender} onChange={handleChange} className="p-2 border rounded">
+          <select name="gender" value={formData.gender} onChange={handleChange} className="p-2 border rounded" required>
             <option value="">Select Gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
 
-          <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} className="p-2 border rounded">
+          <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} className="p-2 border rounded" required>
             <option value="">Marital Status</option>
             <option value="male">Single</option>
             <option value="female">Married</option>
@@ -120,8 +120,8 @@ export default function PatientForm() {
           <Textarea name="pastMedicalHistory" value={formData.pastMedicalHistory} onChange={handleChange} placeholder="Past Medical History" />
           <Textarea name="familyMedicalHistory" value={formData.familyMedicalHistory} onChange={handleChange} placeholder="Family Medical History" />
 
-          <Input name="insuranceProvider" value={formData.insuranceProvider} onChange={handleChange} placeholder="Insurance Provider" />
-          <Input name="insurancePolicyNumber" value={formData.insurancePolicyNumber} onChange={handleChange} placeholder="Insurance Policy Number" />
+          <Input name="insuranceProvider" value={formData.insuranceProvider} onChange={handleChange} placeholder="Insurance Provider" required/>
+          <Input name="insurancePolicyNumber" value={formData.insurancePolicyNumber} onChange={handleChange} placeholder="Insurance Policy Number" required/>
           <Input name="nhifNumber" value={formData.nhifNumber} onChange={handleChange} placeholder="NHIF Number" />
           <Input name="paymentPreference" value={formData.paymentPreference} onChange={handleChange} placeholder="Payment Preference" />
 

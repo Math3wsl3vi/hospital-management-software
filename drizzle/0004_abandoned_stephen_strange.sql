@@ -1,4 +1,4 @@
-ALTER TABLE "patients" DROP CONSTRAINT "patients_phone_unique";--> statement-breakpoint
+iALTER TABLE "patients" DROP CONSTRAINT "patients_phone_unique";--> statement-breakpoint
 ALTER TABLE "patients" DROP CONSTRAINT "patients_insurance_number_unique";--> statement-breakpoint
 ALTER TABLE "patients" ALTER COLUMN "first_name" SET DATA TYPE varchar(50);--> statement-breakpoint
 ALTER TABLE "patients" ALTER COLUMN "middle_name" SET DATA TYPE varchar(50);--> statement-breakpoint

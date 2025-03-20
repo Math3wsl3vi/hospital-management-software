@@ -24,6 +24,8 @@ type PatientData = {
   sex?: string;
   dob?: string;
   email:string;
+  insuranceProvider:string;
+  insurancePolicyNumber:string;
 };
 
 
@@ -57,7 +59,9 @@ const HospitalVisit = () => {
           phone: doc.data().phoneNumber || "",
           sex: doc.data().gender || "",
           dob: doc.data().dateOfBirth || "",
-          email:doc.data().email || ""
+          email:doc.data().email || "",
+          insuranceProvider: doc.data().insuranceProvider || "",
+          insurancePolicyNumber: doc.data().insurancePolicyNumber || "",
         }));
         
         setPatients(patientList);
@@ -98,7 +102,9 @@ const HospitalVisit = () => {
       phone: user.phoneNumber,
       sex: user.gender,
       dob: user.dateOfBirth,
-      email: user.email
+      email: user.email,
+      insuranceProvider:user.insuranceProvider,
+      insurancePolicyNumber:user.insurancePolicyNumber
     });
     setFilteredResults([]);
   };

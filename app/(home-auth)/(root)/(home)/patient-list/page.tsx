@@ -24,6 +24,8 @@ interface Patient {
   gender:string;
   dateOfBirth:string;
   bloodGroup:string;
+  insuranceProvider:string;
+  insurancePolicyNumber:string;
 }
 
 const PatientList = () => {
@@ -62,6 +64,8 @@ const PatientList = () => {
               <TableHead>ID Number</TableHead>
               <TableHead>Date Of Birth</TableHead>
               <TableHead>Blood Group</TableHead>
+              <TableHead>Insurance Provider</TableHead>
+              <TableHead>Policy Number</TableHead>
               <TableHead>Email</TableHead>
             </TableRow>
           </TableHeader>
@@ -75,6 +79,8 @@ const PatientList = () => {
                 <TableCell>{patient.phoneNumber}</TableCell>
                 <TableCell>{patient.dateOfBirth}</TableCell>
                 <TableCell>{patient.bloodGroup}</TableCell>
+                <TableCell>{patient.insuranceProvider}</TableCell>
+                <TableCell>{patient.insurancePolicyNumber}</TableCell>
                 <TableCell>{patient.email}</TableCell>
               </TableRow>
             ))}

@@ -9,6 +9,8 @@ interface User {
   dob: string;
   email:string;
   bloodGroup:string;
+  insuranceProvider:string;
+  insurancePolicyNumber:string;
 }
 
 interface UserState {
