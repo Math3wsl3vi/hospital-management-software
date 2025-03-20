@@ -1,9 +1,7 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: false, // Disable this for now
-  },
-  output: 'standalone', // Ensures all necessary files are bundled
+    serverActions: {} // Ensure this is an object, not a boolean
+  }
 };
 
 module.exports = nextConfig;
