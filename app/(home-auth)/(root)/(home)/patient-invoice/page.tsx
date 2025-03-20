@@ -14,7 +14,7 @@ import { useDocNotesStore } from "@/stores/MedicationStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore"; 
+import { addDoc, collection, doc, setDoc } from "firebase/firestore"; 
 import { db } from "@/configs/firebase.config";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -70,55 +70,60 @@ const PatientInvoice = () => {
 
   // Save invoice to Firebase
 
-
-
-const saveInvoice = async () => {
-  try {
-    if (!selectedUser?.email) {
-      alert("No patient email found!");
-      console.log("Selected User:", selectedUser);
-      return;
+  const saveInvoice = async () => {
+    try {
+      if (!selectedUser?.email) {
+        alert("No patient email found!");
+        console.log("Selected User:", selectedUser);
+        return;
+      }
+  
+      // Generate a unique visit ID based on timestamp
+      const visitId = `visit_${Date.now()}`;
+      
+      // Reference to the patient's medication document
+      const patientRef = doc(db, "patient-medication", selectedUser.email.replace(/[@.]/g, "_"));
+      
+      // Reference to the visit subcollection
+      const visitRef = doc(collection(patientRef, "visits"), visitId);
+      
+      // Store Visit Metadata
+      await setDoc(visitRef, {
+        patientId: selectedUser?.id,
+        patientName: selectedUser?.name,
+        patientEmail: selectedUser?.email,
+        consultationFee,
+        totalAmount: total,
+        visitId, // Attach visit ID
+        visitDate: new Date().toISOString(), // Store visit date
+      });
+  
+      // Reference to medications subcollection under the visit
+      const medicationsCollection = collection(visitRef, "medications");
+  
+      // Store medications under the visit ID
+      await Promise.all(
+        medications.map(async (med, index) => {
+          await addDoc(medicationsCollection, {
+            visitId, // Attach visit ID to each medication entry
+            name: med.name,
+            dosage: med.dosage,
+            frequency: med.frequency,
+            duration: med.duration,
+            amount: medicationAmounts[index]?.amount || 0,
+            quantity: medicationQuantities[index]?.quantity || "0",
+          });
+        })
+      );
+  
+      toast({ description: "Medication sent to the app. Login to view!" });
+    } catch (error) {
+      console.error("Error saving invoice: ", error);
+      alert("Failed to save invoice.");
     }
-
-    const invoiceRef = doc(db, "invoices", selectedUser.email.replace(/[@.]/g, "_"));
-
-    // Store Invoice Metadata (Ensuring it doesn’t overwrite existing data)
-    await setDoc(invoiceRef, {
-      patientId: selectedUser?.id,
-      patientName: selectedUser?.name,
-      patientEmail: selectedUser?.email,
-      consultationFee,
-      totalAmount: total,
-      createdAt: Timestamp.now(),
-    }, { merge: true });
-
-    // Generate a timestamp-based document ID (for grouping)
-    const entryTimestamp = Timestamp.now();
-    const medicationsCollection = collection(invoiceRef, "medications");
-    const entryRef = doc(medicationsCollection, entryTimestamp.toMillis().toString()); // Unique ID from timestamp
-
-    // Store medications under the same timestamp group
-    await Promise.all(
-      medications.map(async (med, index) => {
-        await addDoc(collection(entryRef, "items"), {
-          name: med.name,
-          dosage: med.dosage,
-          frequency: med.frequency,
-          duration: med.duration,
-          amount: medicationAmounts[index]?.amount || 0,
-          quantity: medicationQuantities[index]?.quantity || "0",
-          createdAt: entryTimestamp, // Ensure all have the same timestamp
-        });
-      })
-    );
-
-    toast({ description: "Medication sent to the app. Login to view!" });
-  } catch (error) {
-    console.error("Error saving invoice: ", error);
-    alert("Failed to save invoice.");
-  }
-};
-
+  };
+  
+  
   
 
   return (
