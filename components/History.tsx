@@ -102,7 +102,6 @@ const History = () => {
               ) : Object.keys(medications).length > 0 ? (
                 Object.entries(medications).map(([visitId, meds]) => (
                   <div key={visitId} className="mt-4 border p-3 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold">Visit ID: {visitId}</h3>
                     <ul className="mt-2">
                       {meds.map((med) => (
                         <li key={med.id} className="p-2 border-b">
