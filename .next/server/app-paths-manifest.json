@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/(home-auth)/(root)/(home)/UserAccounts/Admin/page": "app/(home-auth)/(root)/(home)/UserAccounts/Admin/page.js",
+  "/(home-auth)/(root)/(home)/hospital-visit/page": "app/(home-auth)/(root)/(home)/hospital-visit/page.js",
+  "/(home-auth)/(root)/(home)/triage/page": "app/(home-auth)/(root)/(home)/triage/page.js",
+  "/(home-auth)/(root)/(home)/consultation/page": "app/(home-auth)/(root)/(home)/consultation/page.js",
+  "/(home-auth)/(root)/(home)/pharmacy/page": "app/(home-auth)/(root)/(home)/pharmacy/page.js"
+}

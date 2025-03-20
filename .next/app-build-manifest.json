@@ -1,0 +1,50 @@
+{
+  "pages": {
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/(home-auth)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(home-auth)/layout.js"
+    ],
+    "/(home-auth)/(root)/(home)/UserAccounts/Admin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(home-auth)/(root)/(home)/UserAccounts/Admin/page.js"
+    ],
+    "/(home-auth)/(root)/(home)/hospital-visit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(home-auth)/(root)/(home)/hospital-visit/page.js"
+    ],
+    "/(home-auth)/(root)/(home)/triage/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(home-auth)/(root)/(home)/triage/page.js"
+    ],
+    "/(home-auth)/(root)/(home)/consultation/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(home-auth)/(root)/(home)/consultation/page.js"
+    ],
+    "/(home-auth)/(root)/(home)/pharmacy/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(home-auth)/(root)/(home)/pharmacy/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
+    ]
+  }
+}
