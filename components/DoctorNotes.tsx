@@ -81,8 +81,8 @@ const DoctorNotes = () => {
       </div>
       <div className="my-10 flex justify-end">
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button className="bg-green-1 w-[200px]">Advice</Button>
+          <DropdownMenuTrigger className="bg-green-1 w-[200px] py-2 px-4 rounded-md text-white">
+            Advice
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[200px]">
             <DropdownMenuItem onClick={handleContinue}>Pharmacy</DropdownMenuItem>
