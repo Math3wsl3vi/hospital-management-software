@@ -18,7 +18,7 @@ const TriageInput = ({
       <div className="flex gap-10 w-full">
         <div className="gap-2 flex flex-col w-1/2">
           <label htmlFor="service">Full Names</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
+          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md capitalize">
             {selectedUser?.name || "N/A"}
           </div>
         </div>
@@ -44,7 +44,7 @@ const TriageInput = ({
         </div>
         <div className="gap-2 flex flex-col w-1/2">
           <label htmlFor="service">Sex</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
+          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md capitalize">
             {selectedUser?.sex || "N/A"}
           </div>
         </div>

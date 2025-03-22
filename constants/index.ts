@@ -17,15 +17,15 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Doctors',
-        route:'/doctor',
-        imgUrl:'/images/doctor.png'
+        label: 'Precription Adherence',
+        route:'/patient-adherence',
+        imgUrl:'/images/check.png'
 
     },
     {
-        label: 'Nurses',
-        route:'/nurses',
-        imgUrl:'/images/nurse.png'
+        label: 'Progress Tracking',
+        route:'/patient-progress',
+        imgUrl:'/images/progress.png'
 
     },
     {

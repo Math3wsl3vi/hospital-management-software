@@ -103,9 +103,9 @@ const DoctorNotesResults = () => {
           ))}
         </div>
       </div>
-      <div className="w-full flex flex-row gap-10 pt-5">
-        <Button className="w-1/2 bg-green-1">Print Medication</Button>
-        <Button onClick={savePharmacistData} className="w-1/2 bg-green-1">
+      <div className="w-full flex flex-row justify-end items-end gap-10 pt-5 ">
+        <Button className=" bg-green-1 w-1/4">Print Medication</Button>
+        <Button onClick={savePharmacistData} className="w-1/4 bg-green-1">
           Continue
         </Button>
       </div>

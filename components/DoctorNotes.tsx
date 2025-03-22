@@ -2,13 +2,6 @@
 import React, { useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { useDocNotesStore } from "@/stores/MedicationStore";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
@@ -80,7 +73,7 @@ const DoctorNotes = () => {
         </div>  
       </div>
       <div className="my-10 flex justify-end">
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger>
             <Button className="bg-green-1 w-[200px]">Advice</Button>
           </DropdownMenuTrigger>
@@ -90,7 +83,8 @@ const DoctorNotes = () => {
             <DropdownMenuItem>Consultant</DropdownMenuItem>
             <DropdownMenuItem>Radiology</DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
+        <Button onClick={handleContinue} className="bg-green-1">Proceed to Pharmacy</Button>
       </div>
     </>
   );
