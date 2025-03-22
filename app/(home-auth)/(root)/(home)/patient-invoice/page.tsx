@@ -161,9 +161,9 @@ const PatientInvoice = () => {
       <div>
         <h1 className="text-green-1 text-lg mb-4">PATIENT DETAILS</h1>
         <div className="flex flex-row justify-between items-center">
-          <div className="text-xl">
+          <div className="text-lg">
             <p className="capitalize">
-              <span className="font-semibold uppercase ">Name:</span> {selectedUser?.name}{" "}
+              <span className="font-semibold uppercase">Name:</span> {selectedUser?.name}{" "}
             </p>
             <p className="capitalize">
               <span className="font-semibold uppercase">Age:</span> 23
@@ -179,11 +179,11 @@ const PatientInvoice = () => {
             </p>
             <p className="capitalize">
               <span className="font-semibold uppercase">Insurance Provider:</span>{" "}
-              {selectedUser?.insuranceProvider}
+              {selectedUser?.insuranceProvider || 'N/A'}
             </p>
             <p className="capitalize">
               <span className="font-semibold uppercase">insurance Number:</span>{" "}
-              {selectedUser?.insurancePolicyNumber}
+              {selectedUser?.insurancePolicyNumber || 'N/A'}
             </p>
           </div>
         </div>
@@ -265,16 +265,18 @@ const PatientInvoice = () => {
             </TableRow>
           </Table>
           <div className="flex justify-between items-center w-full gap-5 mt-10 print:hidden">
-            <Button className="bg-green-1 w-1/3" onClick={saveInvoice}>
+            {/* <Button className="bg-green-1 w-1/3" onClick={saveInvoice}>
               Add medication to our App
-            </Button>
-            <Button onClick={() => window.print()} className="bg-green-1 text-white w-1/3">
+            </Button> */}
+            <Button onClick={() => window.print()} className="bg-green-1 text-white w-1/2">
             Print Invoice
           </Button>
             {/* dialog */}
             <div className="w-full border bg-green-1 rounded-md">
             <Dialog>
-              <DialogTrigger className="w-full h-9 px-4 py-2 text-white text-sm hover:bg-primary/90 hover:rounded-md" >
+              <DialogTrigger 
+              onClick={saveInvoice}
+              className="w-full h-9 px-4 py-2 text-white text-sm hover:bg-primary/90 hover:rounded-md" >
                  Proceed to Payment
               </DialogTrigger>
               <DialogContent>
@@ -284,7 +286,7 @@ const PatientInvoice = () => {
                     <div className="flex justify-center items-center">
                     <Image src='/images/success.gif' alt="success" width={200} height={200}/>
                     </div>
-                    Your payment has been successfully sent to your insurance provider for approval.
+                    Your payment has been successfully sent to your insurance provider for approval. Your Bill will be sent to you. Thank you for entrusting our services.
                   </DialogDescription>
                   <DialogClose>
                   <div className="flex justify-end">

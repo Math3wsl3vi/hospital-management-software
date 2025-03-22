@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { useDocNotesStore } from "@/stores/MedicationStore";
+<<<<<<< HEAD
+import { Button } from "./ui/button";
+=======
 
 import {
   DropdownMenu,
@@ -9,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+>>>>>>> 9b4574d3e881d1e56c88d8cb6d7d82f2bfb09a99
 import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/configs/firebase.config";
@@ -79,9 +83,15 @@ const DoctorNotes = () => {
         </div>  
       </div>
       <div className="my-10 flex justify-end">
+<<<<<<< HEAD
+        {/* <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button className="bg-green-1 w-[200px]">Advice</Button>
+=======
         <DropdownMenu>
           <DropdownMenuTrigger className="bg-green-1 w-[200px] py-2 px-4 rounded-md text-white">
             Advice
+>>>>>>> 9b4574d3e881d1e56c88d8cb6d7d82f2bfb09a99
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[200px]">
             <DropdownMenuItem onClick={handleContinue}>Pharmacy</DropdownMenuItem>
@@ -89,7 +99,8 @@ const DoctorNotes = () => {
             <DropdownMenuItem>Consultant</DropdownMenuItem>
             <DropdownMenuItem>Radiology</DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
+        <Button onClick={handleContinue} className="bg-green-1">Proceed to Pharmacy</Button>
       </div>
     </>
   );
