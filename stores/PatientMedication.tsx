@@ -53,6 +53,7 @@ const usePatientsWithMedications = () => {
 
           // Format email to match Firestore document IDs
           const emailKey = patientEmail.replace(/[@.]/g, "_");
+          console.log("Fetching visits for:", emailKey);
 
           // Step 3: Fetch visits for this patient
           const visitsCollectionRef = collection(db, "patient-medication", emailKey, "visits");
@@ -62,6 +63,7 @@ const usePatientsWithMedications = () => {
 
           for (const visitDoc of visitsSnap.docs) {
             const visitId = visitDoc.id;
+            console.log('visit 9d ',visitId)
 
             // Step 4: Fetch medications for this visit
             const medicationsCollectionRef = collection(visitDoc.ref, "medications");
@@ -76,6 +78,7 @@ const usePatientsWithMedications = () => {
               duration: medDoc.data().duration || "N/A",
               quantity: medDoc.data().quantity || "N/A",
             }));
+            console.log('medication data',medications)
 
             if (medications.length > 0) {
               medicationsByVisit.push({ visitId, medications });
@@ -89,6 +92,7 @@ const usePatientsWithMedications = () => {
             email: patientEmail,
             medicationsByVisit,
           });
+          console.log(patientsData)
         }
 
         setPatientsWithMedications(patientsData);
