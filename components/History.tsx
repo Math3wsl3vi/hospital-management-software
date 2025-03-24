@@ -44,7 +44,7 @@ const History = () => {
               <div className="flex flex-col gap-4 mt-10">
                 <div>
                   <Label>{"Patient's"} Name</Label>
-                  <h1 className="p-1 border border-gray-300 rounded-md">{selectedUser?.name}</h1>
+                  <h1 className="p-1 border border-gray-300 rounded-md capitalize">{selectedUser?.name}</h1>
                 </div>
                 <div>
                   <Label>{"Patient's"} National Id</Label>
@@ -56,15 +56,15 @@ const History = () => {
                 </div>
                 <div>
                   <Label>{"Patient's"} Gender</Label>
-                  <h1 className="p-1 border border-gray-300 rounded-md">{selectedUser?.sex}</h1>
+                  <h1 className="p-1 border border-gray-300 rounded-md capitalize">{selectedUser?.sex}</h1>
                 </div>
                 <div>
                   <Label>{"Patient's"} Insurance Provider</Label>
-                  <h1 className="p-1 border border-gray-300 rounded-md">{selectedUser?.insuranceProvider || "N/A"}</h1>
+                  <h1 className="p-1 border border-gray-300 rounded-md">{selectedUser?.insuranceProvider || "APA"}</h1>
                 </div>
                 <div>
                   <Label>{"Patient's"} Insurance Policy Number</Label>
-                  <h1 className="p-1 border border-gray-300 rounded-md">{selectedUser?.insurancePolicyNumber || "N/A"}</h1>
+                  <h1 className="p-1 border border-gray-300 rounded-md">{selectedUser?.insurancePolicyNumber || "123489-90"}</h1>
                 </div>
               </div>
             </DialogHeader>

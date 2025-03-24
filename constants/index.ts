@@ -23,9 +23,9 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Progress Tracking',
-        route:'/patient-progress',
-        imgUrl:'/images/progress.png'
+        label: 'Doctors',
+        route:'/doctor',
+        imgUrl:'/images/doctor.png'
 
     },
     {
