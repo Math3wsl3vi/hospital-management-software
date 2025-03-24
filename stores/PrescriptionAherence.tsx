@@ -6,7 +6,7 @@ import { db } from "@/configs/firebase.config";
 interface Medication {
   id: string;
   name: string;
-  canCheck: boolean;
+  isTaken: boolean;
   schedule?: string[];
 }
 
@@ -43,11 +43,11 @@ const useAdherenceData = () => {
           const adherenceList: Medication[] = [];
 
           medicationsSnap.forEach((medDoc) => {
-            const { name, canCheck, schedule } = medDoc.data();
+            const { name, isTaken, schedule } = medDoc.data();
             adherenceList.push({
               id: medDoc.id,
               name: name || "Unknown", 
-              canCheck: canCheck ?? false, 
+              isTaken: isTaken ?? false, 
               schedule: schedule || [], 
             });
           });

@@ -8,14 +8,19 @@ const adherenceData = [
   { name: "Apr", taken: 90, missed: 10 },
 ];
 
-const data = [
-  { name: "Adherent Patients", value: 70 },
-  { name: "Missed Doses", value: 30 },
-];
+interface AdherenceSummary {
+  taken: number;
+  missed: number;
+}
+
 
 const COLORS = ["#4CAF50", "#FF5733"];
 
-const AdherenceChart = () => {
+const AdherenceChart: React.FC<{ adherenceSummary: AdherenceSummary }> = ({ adherenceSummary }) => {
+  const data = [
+    { name: "Taken", value: adherenceSummary.taken },
+    { name: "Missed", value: adherenceSummary.missed },
+  ];
   return (
     <div className='flex flex-row gap-10'>
     <div className="w-1/2 h-96 flex flex-col items-center justify-center">
@@ -47,7 +52,7 @@ const AdherenceChart = () => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="taken" fill="#4CAF50" name="Taken" />
+            <Bar dataKey="taken" fill="#22b73a" name="Taken" />
             <Bar dataKey="missed" fill="#F44336" name="Missed" />
           </BarChart>
         </ResponsiveContainer>

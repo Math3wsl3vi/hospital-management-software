@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import AdherenceChart from "@/components/AdherenceChart";
 import useAdherenceData from "@/stores/PrescriptionAherence";
-import PatientMedicationsTable from "@/components/PatientMedicationTable";
+// import PatientMedicationsTable from "@/components/PatientMedicationTable";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/UseStore";
@@ -20,13 +20,13 @@ interface Patient {
   adherenceList: {
     id: string;
     name: string;
-    canCheck: boolean;
+    isTaken: boolean;
   }[];
 }
 
 const PrescriptionAdherence = () => {
   const { patients } = useAdherenceData();
-  const patientEmail = patients.length > 0 ? patients[0].email : "";
+  // const patientEmail = patients.length > 0 ? patients[0].email : "";
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
@@ -43,16 +43,30 @@ console.log(setSelectedUser)
       alert("Phone number not available.");
     }
   };
+
+  const adherenceSummary = patients.reduce(
+    (acc, patient) => {
+      patient.adherenceList.forEach((med) => {
+        if (med.isTaken) {
+          acc.taken += 1;
+        } else {
+          acc.missed += 1;
+        }
+      });
+      return acc;
+    },
+    { taken: 0, missed: 0 }
+  );
   
 
   return (
     <div className="p-6 space-y-6">
       {/* Medication Tracker */}
       <div>
-        <AdherenceChart />
+      <AdherenceChart adherenceSummary={adherenceSummary} />
       </div>
       <div>
-        <PatientMedicationsTable email={patientEmail} />
+        {/* <PatientMedicationsTable email={patientEmail} /> */}
       </div>
 
       {/* Missed Medications */}
@@ -78,14 +92,14 @@ console.log(setSelectedUser)
                     <TableCell className="capitalize">{selectedUser?.name}</TableCell>
                     <TableCell>{med.name}</TableCell>
                     <TableCell>
-                      {med.canCheck ? (
+                      {med.isTaken ? (
                         <span className="text-green-500">✅ Taken</span>
                       ) : (
                         <span className="text-red-500">❌ Missed</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      {med.canCheck ? (
+                      {med.isTaken ? (
                         <button className="px-3 py-1 bg-blue-500 text-white rounded">
                           Mark as Reviewed
                         </button>
