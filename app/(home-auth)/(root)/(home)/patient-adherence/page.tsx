@@ -21,6 +21,7 @@ interface Patient {
     id: string;
     name: string;
     isTaken: boolean;
+    scheduledTime?:string[];
   }[];
 }
 
@@ -82,6 +83,7 @@ console.log(setSelectedUser)
                 <TableHead>Patient Name</TableHead>
                 <TableHead>Medication</TableHead>
                 <TableHead>Adherence</TableHead>
+                <TableHead>Schedule</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -98,6 +100,9 @@ console.log(setSelectedUser)
                         <span className="text-red-500">❌ Missed</span>
                       )}
                     </TableCell>
+                    <TableCell>
+  {Array.isArray(med.scheduledTime) ? med.scheduledTime.join(", ") : med.scheduledTime}
+</TableCell>
                     <TableCell>
                       {med.isTaken ? (
                         <button className="px-3 py-1 bg-blue-500 text-white rounded">

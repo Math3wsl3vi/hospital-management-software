@@ -7,7 +7,7 @@ interface Medication {
   id: string;
   name: string;
   isTaken: boolean;
-  schedule?: string[];
+  scheduledTime?: string[];
 }
 
 interface Patient {
@@ -43,12 +43,12 @@ const useAdherenceData = () => {
           const adherenceList: Medication[] = [];
 
           medicationsSnap.forEach((medDoc) => {
-            const { name, isTaken, schedule } = medDoc.data();
+            const { name, isTaken, scheduledTime } = medDoc.data();
             adherenceList.push({
               id: medDoc.id,
               name: name || "Unknown", 
               isTaken: isTaken ?? false, 
-              schedule: schedule || [], 
+              scheduledTime: Array.isArray(scheduledTime) ? scheduledTime.join(", ") : scheduledTime || "N/A",  
             });
           });
 
