@@ -11,12 +11,6 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Department',
-        route:'/departments',
-        imgUrl:'/images/corporation.png'
-
-    },
-    {
         label: 'Precription Adherence',
         route:'/patient-adherence',
         imgUrl:'/images/check.png'
@@ -75,9 +69,9 @@ export const ItemCard = [
     },
     {
         id:'4',
-        name: 'Laboratory',
-        icon: '/images/lab.png',
-        route:'/lab',
+        name: 'Prescription Adherence',
+        icon: '/images/achievement.png',
+        route:'/patient-adherence',
     },  {
         id:'5',
         name: 'Pharmacy',

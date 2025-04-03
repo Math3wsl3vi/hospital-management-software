@@ -2,19 +2,19 @@
 import DoctorNotesResults from '@/components/DoctorNotesResults'
 import TriageInput from '@/components/TriageInput'
 import { useUserStore } from '@/stores/UseStore'
-import React, { useEffect, useState } from 'react'
+// import React, { useEffect, useState } from 'react
 
 const PharmacyUser = () => {
 
-      const [ user, setUser ] = useState<{ role: string} | null >(null)
-      console.log(user)
+      // const [ user, setUser ] = useState<{ role: string} | null >(null)
+      // console.log(user)
   
-      useEffect(()=> {
-        const storedUser = localStorage.getItem("user");
-        if(storedUser){
-          setUser(JSON.parse(storedUser))
-        }
-      },[])
+      // useEffect(()=> {
+      //   const storedUser = localStorage.getItem("user");
+      //   if(storedUser){
+      //     setUser(JSON.parse(storedUser))
+      //   }
+      // },[])
   const selectedUser = useUserStore((state) => state.selectedUser)
   return (
     <div>

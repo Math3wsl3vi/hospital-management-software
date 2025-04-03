@@ -2,28 +2,28 @@
 import History from "@/components/History";
 import TriageInput from "@/components/TriageInput";
 import Vitals from "@/components/Vitals";
-import { useToast } from "@/hooks/use-toast";
+// import { useToast } from "@/hooks/use-toast";
 import { useUserStore } from "@/stores/UseStore";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { useEffect, useState } from "react";
 
 const NurseUser = () => {
   const selectedUser = useUserStore((state) => state.selectedUser);
-  const router = useRouter()
-  const [user, setUser] = useState(null);
-  const { toast  } = useToast()
+  // const router = useRouter()
+  // const [user, setUser] = useState(null);
+  // const { toast  } = useToast()
 
-   useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-        if (!storedUser || storedUser.role !== "nurse" || storedUser.role !== 'admin') {
-          router.push("/sign-in"); 
-          toast({description:'You are not authorized to visit this page'})
-        } else {
-          setUser(storedUser);
-        }
-      }, [router, toast]);
+  //  useEffect(() => {
+  //       const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  //       if (!storedUser || storedUser.role !== "nurse" || storedUser.role !== 'admin') {
+  //         router.push("/sign-in"); 
+  //         toast({description:'You are not authorized to visit this page'})
+  //       } else {
+  //         setUser(storedUser);
+  //       }
+  //     }, [router, toast]);
     
-      if (!user) return <p>Loading...</p>;
+  //     if (!user) return <p>Loading...</p>;
     
 
   return (

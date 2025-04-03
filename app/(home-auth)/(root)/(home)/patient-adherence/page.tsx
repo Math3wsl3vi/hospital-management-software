@@ -8,6 +8,7 @@ import useAdherenceData from "@/stores/PrescriptionAherence";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/UseStore";
+import { format } from "date-fns";
 
 const reminders = [
   { id: 1, patient: "John Doe", time: "8:00 AM", message: "Take Paracetamol" },
@@ -101,12 +102,19 @@ console.log(setSelectedUser)
                       )}
                     </TableCell>
                     <TableCell>
-  {Array.isArray(med.scheduledTime) ? med.scheduledTime.join(", ") : med.scheduledTime}
-</TableCell>
+                      {Array.isArray(med.scheduledTime)
+                        ? med.scheduledTime
+                            .map((time) => format(new Date(time), "h:mm a"))
+                            .join(", ")
+                        : med.scheduledTime
+                          ? format(new Date(med.scheduledTime), "h:mm a")
+                          : "N/A"}
+                    </TableCell>
+
                     <TableCell>
                       {med.isTaken ? (
-                        <button className="px-3 py-1 bg-blue-500 text-white rounded">
-                          Mark as Reviewed
+                        <button className="px-3 py-1 bg-green-1 text-white rounded">
+                          Medication Taken
                         </button>
                       ) : (
                         <button
