@@ -1,7 +1,4 @@
 "use client";
-// import { useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { useToast } from "@/hooks/use-toast";
 import DoctorNotes from "@/components/DoctorNotes";
 import TriageInput from "@/components/TriageInput";
 import Vitalresults from "@/components/Vitalresults";
@@ -11,21 +8,6 @@ import { useUserStore } from "@/stores/UseStore";
 
 export default function DoctorPage() {
     const selectedUser = useUserStore((state) => state.selectedUser);
-  // const router = useRouter();
-  // const [user, setUser] = useState(null);
-  // const { toast } = useToast()
-
-  // useEffect(() => {
-  //   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-  //   if (!storedUser || storedUser.role !== "doctor" || storedUser.role !== 'admin') {
-  //     toast({description:'You are not authorized to visit this page'})
-  //     router.push("/sign-in"); 
-  //   } else {
-  //     setUser(storedUser);
-  //   }
-  // }, [router, toast]);
-
-  // if (!user) return <p>Loading...</p>;
 
   return (
     <div>

@@ -99,6 +99,7 @@ const Doctor = () => {
     };
 
     const [ user, setUser ] = useState<{ role: string} | null >(null)
+    console.log(user)
 
     useEffect(()=> {
       const storedUser = localStorage.getItem("user");
@@ -112,11 +113,11 @@ const Doctor = () => {
     <div>
       <h1 className="text-xl font-semibold mb-3">Doctors</h1>
       <div>
-        <div className="grid grid-cols-3 mb-5">
+        <div className="grid grid-cols-2 mb-5">
           <div className="border p-2 text-center active:bg-green-1 active:text-white cursor-pointer hover:text-white hover:bg-green-1">
             <h1>Doctor List</h1>
           </div>
-          {user?.role === 'admin' && (
+          {/* {user?.role === 'admin' && (
             <div
             onClick={() => setIsOpen(true)}
             className="border p-2 text-center active:bg-green-1 active:text-white cursor-pointer hover:text-white hover:bg-green-1"
@@ -124,14 +125,14 @@ const Doctor = () => {
             <h1>Register a Doctor</h1>
           </div>
 
-          )}
+          )} */}
           <div className="border p-2 text-center active:bg-green-1 active:text-white cursor-pointer hover:text-white hover:bg-green-1">
             <h1>Appointments</h1>
           </div>
         </div>
         <div>
           <Table>
-            <TableHeader>
+            <TableHeader> 
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Secialization</TableHead>

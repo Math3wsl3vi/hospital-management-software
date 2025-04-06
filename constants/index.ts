@@ -29,9 +29,9 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Accounts',
-        route:'/Accounts',
-        imgUrl:'/images/accounting.png'
+        label: 'Bed Management',
+        route:'/ward',
+        imgUrl:'/images/ward.png'
 
     },
     {
