@@ -17,8 +17,8 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Doctors',
-        route:'/doctor',
+        label: 'Records',
+        route:'/Records',
         imgUrl:'/images/doctor.png'
 
     },
