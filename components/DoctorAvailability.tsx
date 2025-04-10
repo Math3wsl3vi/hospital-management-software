@@ -14,7 +14,7 @@ const doctors = [
 const DoctorAvailability = () => {
   return (
     <div>
-        <h2 className="text-xl font-semibold mb-4">Doctor Availability</h2>
+        <h2 className="text-xl font-semibold mb-4 font-poppins text-green-1">Doctor Availability</h2>
         <table className="w-full border-collapse border border-gray-300 rounded-md">
             <thead>
             <tr className="bg-gray-100">
