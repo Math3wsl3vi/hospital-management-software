@@ -14,7 +14,7 @@ const poppins = Poppins({
 
 
 export const metadata: Metadata = {
-  title: "MediSync",
+  title: "NovaMed",
   description: "Hospital Management System and Smart Health Reminder",
 };
 
