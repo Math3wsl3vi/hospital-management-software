@@ -15,7 +15,7 @@ const Navbar = () => {
     <div className="w-full h-14 bg-slate-50 flex items-center ">
       <div className="w-[250px] h-full bg-[#21263c]">
         <div className="rounded-bl-xl bg-[#181c2e] w-[250px] h-full pl-4 pt-4">
-          <Link href={'/'} className="text-xl font-poppins text-white uppercase">M e d i S y n c</Link>
+          <Link href={'/'} className="text-xl font-poppins text-white uppercase">N o v a M e d</Link>
         </div>
       </div>
       <div className="flex-1 items-center flex justify-between px-5 gap-10">
