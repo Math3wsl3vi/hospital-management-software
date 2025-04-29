@@ -1,6 +1,16 @@
 const nextConfig = {
+  output: 'standalone',
   experimental: {
-    serverActions: {} 
+    serverActions: {}, 
+    appDir: true,
+  },
+  transpilePackages: [
+    // Add any npm packages that need transpilation here
+  ],
+  async rewrites() {
+    return [
+      // Add any URL rewrites if needed
+    ];
   }
 };
 
