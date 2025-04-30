@@ -24,7 +24,7 @@ const SideBar = () => {
       {/* Mobile toggle button */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-3 left-4 z-50 bg-[#21263c] p-2 rounded-md text-white"
+        className="lg:hidden absolute top-3 left-4 z-50 bg-[#21263c] p-2 rounded-md text-white"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>

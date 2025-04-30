@@ -17,21 +17,13 @@ const HomePage = () => {
       <ItemCards/>
       </div>
       <div className='flex flex-row gap-5 min-h-full xl:flex-col'>
-         {/* calender */}
-         {/* <div className='flex-1 xl:min-h-screen'>
-         <BigCalender/>
-         </div> */}
-      {/* noticeboard */}
       <div className=''>
       <NoticeBoard/>
       </div>
       </div>
-      <div className='flex flex-row gap-5 min-h-full items-start'>
-        <div className='flex-1'>
+      <div className='flex flex-col gap-5 min-h-full items-start'>
         <AppointmentTable/>
-        </div>
         <DoctorAvailability/>
-
       </div>
      
     </div>

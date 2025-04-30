@@ -79,7 +79,7 @@ const SignIn = () => {
 
   return (
     <div className="flex items-center justify-center mt-[20vh]">
-      <div className="border w-1/3 p-5 rounded-md">
+      <div className="border w-full md:w-1/3 p-5 rounded-md">
         <h1 className="text-center font-semibold text-lg">Welcome to HMS</h1>
         <h1 className="text-center text-green-1 uppercase">Login to continue</h1>
         <div className="flex flex-col gap-5">
