@@ -8,7 +8,7 @@ const Records = () => {
     <div>
       <h1 className='text-xl font-semibold mb-4 font-poppins text-green-1'>Hospital Employees List</h1>
         {/* item cards */}
-        <div className='grid grid-cols-4 gap-10 mb-10'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-10 mb-10'>
             <Link href='/doctor' className='border min-h-44 rounded-md p-2 border-gray-300 flex items-center justify-center gap-5 flex-col'>
             <Image src='/images/doctor.png' alt='doc' width={50} height={50}/>
             Doctors</Link>

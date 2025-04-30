@@ -22,7 +22,7 @@ const HomeCalendar = () => {
                     Welcome {user?.role || 'User'}
                 </h2>
 
-                <div className='flex flex-col gap-1 sm:gap-2'>
+                <div className='flex flex-col gap-1 sm:gap-4 mt-10'>
                     <h1 className='text-3xl sm:text-4xl md:text-5xl font-extrabold'>
                         {time}
                     </h1>

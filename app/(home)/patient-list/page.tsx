@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -17,19 +18,18 @@ import { db } from "@/configs/firebase.config";
 interface Patient {
   id: string;
   firstName: string;
-  middleName:string;
+  middleName: string;
   nationalId: string;
   phoneNumber: string;
   email: string;
-  gender:string;
-  dateOfBirth:string;
-  bloodGroup:string;
-  insuranceProvider:string;
-  insurancePolicyNumber:string;
+  gender: string;
+  dateOfBirth: string;
+  bloodGroup: string;
+  insuranceProvider: string;
+  insurancePolicyNumber: string;
 }
 
 const PatientList = () => {
-  // Explicitly define the state type as an array of Patient
   const [patients, setPatients] = useState<Patient[]>([]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const PatientList = () => {
         const querySnapshot = await getDocs(collection(db, "patients"));
         const patientData: Patient[] = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<Patient, "id">), 
+          ...(doc.data() as Omit<Patient, "id">),
         }));
         setPatients(patientData);
       } catch (error) {
@@ -50,29 +50,29 @@ const PatientList = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-green-600">Patient List</h1>
-      <div>
+    <div className="p-4">
+      <h1 className="text-2xl font-semibold text-green-600 mb-4">Patient List</h1>
+      <div className="overflow-x-auto rounded-md border">
         <Table>
-          <TableCaption>A list of registered patients.</TableCaption>
+          <TableCaption className="text-sm">A list of registered patients.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[150px]">First Name</TableHead>
-              <TableHead>Last Name</TableHead>
-              <TableHead>ID Number</TableHead>
-              <TableHead>Gender</TableHead>
-              <TableHead>ID Number</TableHead>
-              <TableHead>Date Of Birth</TableHead>
-              <TableHead>Blood Group</TableHead>
-              <TableHead>Insurance Provider</TableHead>
-              <TableHead>Policy Number</TableHead>
-              <TableHead>Email</TableHead>
+              <TableHead className="min-w-[120px]">First Name</TableHead>
+              <TableHead className="min-w-[120px]">Middle Name</TableHead>
+              <TableHead className="min-w-[150px]">ID Number</TableHead>
+              <TableHead className="min-w-[100px]">Gender</TableHead>
+              <TableHead className="min-w-[150px]">Phone Number</TableHead>
+              <TableHead className="min-w-[150px]">Date Of Birth</TableHead>
+              <TableHead className="min-w-[120px]">Blood Group</TableHead>
+              <TableHead className="min-w-[180px]">Insurance Provider</TableHead>
+              <TableHead className="min-w-[180px]">Policy Number</TableHead>
+              <TableHead className="min-w-[200px]">Email</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {patients.map((patient) => (
               <TableRow key={patient.id}>
-                <TableCell className="font-medium capitalize">{patient.firstName}</TableCell>
+                <TableCell className="capitalize">{patient.firstName}</TableCell>
                 <TableCell className="capitalize">{patient.middleName}</TableCell>
                 <TableCell>{patient.nationalId}</TableCell>
                 <TableCell className="capitalize">{patient.gender}</TableCell>

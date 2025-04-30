@@ -1,10 +1,13 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { userAuth } from "@/lib/data";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface User {
   username: string;
@@ -16,28 +19,28 @@ const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [user, setUser] = useState<User | null>(null); // ✅ Fix applied
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const handleLogin = () => {
     const foundUser = Object.values(userAuth).find(
       (u) => u.username === username && u.password === password
-    ) as User | undefined; // ✅ Type assertion fix
+    ) as User | undefined;
 
     if (foundUser) {
       localStorage.setItem("user", JSON.stringify(foundUser));
-      setUser(foundUser); // ✅ Fix applied
+      setUser(foundUser);
       console.log(user)
+
+      toast({ description: `Welcome ${foundUser.role}` });
 
       switch (foundUser.role) {
         case "doctor":
@@ -61,7 +64,6 @@ const SignIn = () => {
         default:
           break;
       }
-      toast({ description: `Welcome ${foundUser.role}` });
     } else {
       setError("Invalid username or password");
     }
@@ -78,45 +80,46 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-[20vh]">
-      <div className="border w-full md:w-1/3 p-5 rounded-md">
-        <h1 className="text-center font-semibold text-lg">Welcome to HMS</h1>
-        <h1 className="text-center text-green-1 uppercase">Login to continue</h1>
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-3">
-            <label htmlFor="username">Username</label>
+    <div className="flex min-h-screen items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center">Welcome to HMS</CardTitle>
+          <p className="text-sm text-center text-muted-foreground">Login to continue</p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="username">Username</Label>
             <Input
               id="username"
-              className="focus-visible:ring-0 focus-visible:ring-offset-0"
-              value={username}
               type="text"
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          <div className="flex flex-col gap-3">
-            <label htmlFor="password">Password</label>
+          <div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
-              className="focus-visible:ring-0 focus-visible:ring-offset-0"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="w-full flex flex-col items-center justify-center mt-5">
-            <Button className="w-1/2 bg-green-1" onClick={handleLogin}>
-              Continue
-            </Button>
-            {error && <p className="text-sm mt-3">{error}</p>}
-          </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
+        </CardContent>
+        <CardFooter className="flex flex-col gap-2">
+          <Button className="w-full bg-green-1" onClick={handleLogin}>
+            Continue
+          </Button>
           <Button
             onClick={handleLogout}
-            className="bg-white text-red-500 shadow-none hover:bg-white"
+            variant="ghost"
+            className="text-red-500 hover:bg-transparent"
           >
             Log out
           </Button>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
