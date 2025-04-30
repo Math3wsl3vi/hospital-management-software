@@ -18,7 +18,7 @@ const HomeCalendar = () => {
     return (
         <div className='w-full min-h-[250px] sm:min-h-[300px] rounded-[20px] bg-hero bg-cover bg-center'>
             <div className='flex h-full justify-between flex-col p-4 sm:p-6 md:p-8 lg:p-11 text-white'>
-                <h2 className='glassmorphism max-w-[300px] text-sm sm:text-base md:text-lg rounded py-2 text-center font-normal capitalize'>
+                <h2 className='glassmorphism max-w-[300px] text-sm sm:text-base md:text-lg rounded-md py-2 text-center font-normal capitalize'>
                     Welcome {user?.role || 'User'}
                 </h2>
 

@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/table";
 
 const doctors = [
-  { doctor: "Manoj Kumar", checkup: "Dental", unit: "Army" },
-  { doctor: "Daniel", checkup: "Ortho", unit: "Army" },
-  { doctor: "Daniel", checkup: "Ortho", unit: "Army" },
-  { doctor: "Manoj Kumar", checkup: "Dental", unit: "Army" },
-  { doctor: "Patel", checkup: "Ortho", unit: "Army" },
-  { doctor: "Pamwai", checkup: "Radiology", unit: "Army" },
+  { doctor: "Manoj Kumar", checkup: "Dental", status: "Active" },
+  { doctor: "Daniel", checkup: "Ortho", status: "Active" },
+  { doctor: "Daniel", checkup: "Ortho", status: "Active" },
+  { doctor: "Manoj Kumar", checkup: "Dental", status: "Active" },
+  { doctor: "Patel", checkup: "Ortho", status: "Active" },
+  { doctor: "Pamwai", checkup: "Radiology", status: "Active" },
 ];
 
 const DoctorAvailability = () => {
@@ -28,7 +28,7 @@ const DoctorAvailability = () => {
           <TableRow>
             <TableHead>Doctor</TableHead>
             <TableHead>Specialty</TableHead>
-            <TableHead>Unit</TableHead>
+            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -36,7 +36,7 @@ const DoctorAvailability = () => {
             <TableRow key={index}>
               <TableCell>{doctor.doctor}</TableCell>
               <TableCell>{doctor.checkup}</TableCell>
-              <TableCell>{doctor.unit}</TableCell>
+              <TableCell>{doctor.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>
