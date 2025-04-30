@@ -128,10 +128,10 @@ const HospitalVisit = () => {
         <div className="mt-10 flex justify-center items-center gap-10 flex-col">
           {/* Patient Search */}
           <Input
-            placeholder="Enter Id Number"
+            placeholder="Enter Id Number/ Name"
             value={query}
             onChange={handleSearch}
-            className="font-poppins text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2 capitalize"
+            className="font-poppins md:text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2 capitalize"
           />
           {filteredResults.length > 0 && (
             <div className="w-full md:w-3/4 bg-white border rounded-md overflow-y-auto">
