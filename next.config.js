@@ -4,7 +4,8 @@ const nextConfig = {
   },
   // Add output configuration
   output: 'standalone',
-  // Disable specific file generation that's causing issues
+    output: 'standalone',
+  swcMinify: true,
   typescript: {
     ignoreBuildErrors: true
   }
