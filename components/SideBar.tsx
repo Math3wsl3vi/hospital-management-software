@@ -3,7 +3,7 @@ import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
   DropdownMenu,
@@ -15,9 +15,45 @@ import { Menu, X } from "lucide-react";
 
 const SideBar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const foundUser = JSON.parse(localStorage.getItem("user") || "null");
+    
+    if (!foundUser) {
+      router.push("/sign-in");
+      return;
+    }
+
+    switch (foundUser.role) {
+      case "doctor":
+        router.push("/UserAccounts/Doctor");
+        break;
+      case "nurse":
+        router.push("/UserAccounts/Nurse");
+        break;
+      case "pharmacy":
+        router.push("/UserAccounts/Pharmacy");
+        break;
+      case "lab":
+        router.push("/UserAccounts/Lab");
+        break;
+      case "admin":
+        router.push("/UserAccounts/Admin");
+        break;
+      case "reception":
+        router.push("/UserAccounts/Reception");
+        break;
+      default:
+        router.push("/");
+        break;
+    }
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -66,7 +102,7 @@ const SideBar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-[#21263c] text-white border-none w-[250px] font-poppins">
                     <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
-                      <Link href={'Reception'} onClick={() => setIsOpen(false)}>Reception</Link>
+                      <Link href={'/Reception'} onClick={() => setIsOpen(false)}>Reception</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
                       <Link href={'/triage'} onClick={() => setIsOpen(false)}>Triage</Link>
@@ -84,6 +120,31 @@ const SideBar = () => {
                 </DropdownMenu>
               );
             }
+
+            if (item.label === "Home") {
+              return (
+                <button
+                  key={item.route}
+                  onClick={handleHomeClick}
+                  className={cn(
+                    "flex gap-6 items-center justify-start p-3 rounded-xl w-full",
+                    { "bg-green-1 text-white": isActive }
+                  )}
+                >
+                  <Image
+                    src={item.imgUrl}
+                    alt="image"
+                    width={20}
+                    height={20}
+                    style={{
+                      filter: "invert(1) sepia(1) saturate(10) hue-rotate(200deg)",
+                    }}
+                  />
+                  <p className="font-poppins text-sm">{item.label}</p>
+                </button>
+              );
+            }
+
             return (
               <Link
                 href={item.route}
