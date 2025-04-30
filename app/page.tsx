@@ -20,8 +20,8 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col">
       {/* Header */}
       <header className="bg-slate-50 w-full py-4 px-6 shadow-sm">
-        <Link href="/" className="text-2xl font-bold tracking-widest text-black uppercase font-poppins">
-          NovaMed
+        <Link href="/" className="text-2xl text-black uppercase font-poppins">
+          N o v a M e d
         </Link>
       </header>
 
