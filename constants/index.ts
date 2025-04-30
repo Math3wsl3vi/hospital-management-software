@@ -67,17 +67,18 @@ export const ItemCard = [
         icon: '/images/doctor.png',
         route:'/consultation',
     },
-    {
+   {
         id:'4',
-        name: 'Prescription Adherence',
-        icon: '/images/achievement.png',
-        route:'/patient-adherence',
-    },  {
-        id:'5',
         name: 'Pharmacy',
         icon: '/images/medicine.png',
         route:'/pharmacy',
     },
+    {
+        id:'5',
+        name: 'Prescription Adherence',
+        icon: '/images/achievement.png',
+        route:'/patient-adherence',
+    }, 
     {
         id:'6',
         name: 'Departments',
