@@ -23,7 +23,7 @@ const TriageInput = ({
   ];
 
   return (
-    <div className="flex flex-wrap gap-6 w-full">
+    <div className="flex flex-wrap gap-6 w-full p-2">
       {fields.map((field, index) => (
         <div
           key={index}

@@ -8,7 +8,7 @@ const Pharmacy = () => {
   const selectedUser = useUserStore((state) => state.selectedUser)
   return (
     <div>
-      <div className='flex justify-between'>
+      <div className='flex justify-between p-4'>
         <h1 className='text-xl'>Pharmacy</h1>
         <div className='border p-1 px-3 rounded-md'>
           <h1>Dr. Mevi Lathews</h1>

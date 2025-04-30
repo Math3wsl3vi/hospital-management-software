@@ -9,17 +9,13 @@ import { db } from "@/configs/firebase.config";
 import { doc, setDoc } from "firebase/firestore";
 import { useUserStore } from "@/stores/UseStore";
 
-
 const DoctorNotesResults = () => {
   const router = useRouter();
   const { docNotes, setDocNotes } = useDocNotesStore();
   const { toast } = useToast();
-  const selectedUser = useUserStore((state) => state.selectedUser); // Get the selected user
-
-  // Initialize patientId
+  const selectedUser = useUserStore((state) => state.selectedUser);
   const patientId = selectedUser?.id?.toString();
 
-  // Initialize state at the top level (fixes the React Hook error)
   const [pharmacistData, setPharmacistData] = useState(
     docNotes.medication
       ? docNotes.medication.split(",").map((med) => ({
@@ -31,14 +27,16 @@ const DoctorNotesResults = () => {
       : []
   );
 
-  // Handle input changes
-  const HandleInputChange = (index: number, field: keyof (typeof pharmacistData)[number], value: string) => {
+  const HandleInputChange = (
+    index: number,
+    field: keyof (typeof pharmacistData)[number],
+    value: string
+  ) => {
     const updatedData = [...pharmacistData];
     updatedData[index][field] = value;
     setPharmacistData(updatedData);
   };
 
-  // Save data to Firestore
   const savePharmacistData = async () => {
     if (!patientId) {
       toast({ description: "No patient selected.", variant: "destructive" });
@@ -46,19 +44,23 @@ const DoctorNotesResults = () => {
     }
 
     try {
-      // Convert to string format before saving (Fixes TS2345 error)
       const formattedMedication = pharmacistData
-        .map(({ name, dosage, frequency, duration }) => `${name} - ${dosage} - ${frequency} - ${duration}`)
+        .map(
+          ({ name, dosage, frequency, duration }) =>
+            `${name} - ${dosage} - ${frequency} - ${duration}`
+        )
         .join(",");
 
       const updatedDocNotes = {
         ...docNotes,
-        medication: formattedMedication, // Ensure it's a string
+        medication: formattedMedication,
       };
 
-      await setDoc(doc(db, "doctor_notes", patientId), updatedDocNotes, { merge: true });
+      await setDoc(doc(db, "doctor_notes", patientId), updatedDocNotes, {
+        merge: true,
+      });
 
-      setDocNotes(updatedDocNotes); 
+      setDocNotes(updatedDocNotes);
 
       toast({
         description: "Medication data saved successfully.",
@@ -80,32 +82,44 @@ const DoctorNotesResults = () => {
         <label className="text-xl">Prescribed Medication</label>
         <div className="mt-3 border rounded-md min-h-44 p-2">
           {pharmacistData.map((med, index) => (
-            <div key={index} className="flex flex-row gap-5 border-b p-2 justify-between">
-              <span className="capitalize">{med.name}</span>
-              <div className="ml-20 flex flex-row gap-10">
+            <div
+              key={index}
+              className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b p-2"
+            >
+              <span className="capitalize font-semibold w-full md:w-1/4">{med.name}</span>
+              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-3/4">
                 <Input
                   placeholder="Dosage (e.g. 500mg/10ml)"
                   value={med.dosage}
-                  onChange={(e) => HandleInputChange(index, "dosage", e.target.value)}
+                  onChange={(e) =>
+                    HandleInputChange(index, "dosage", e.target.value)
+                  }
                 />
                 <Input
                   placeholder="Frequency (e.g. 3 times a day)"
                   value={med.frequency}
-                  onChange={(e) => HandleInputChange(index, "frequency", e.target.value)}
+                  onChange={(e) =>
+                    HandleInputChange(index, "frequency", e.target.value)
+                  }
                 />
                 <Input
                   placeholder="Duration (e.g. 5 days)"
                   value={med.duration}
-                  onChange={(e) => HandleInputChange(index, "duration", e.target.value)}
+                  onChange={(e) =>
+                    HandleInputChange(index, "duration", e.target.value)
+                  }
                 />
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="w-full flex flex-row justify-end items-end gap-10 pt-5 ">
-        <Button className=" bg-green-1 w-1/4">Print Medication</Button>
-        <Button onClick={savePharmacistData} className="w-1/4 bg-green-1">
+      <div className="w-full flex flex-col sm:flex-row justify-end gap-4 pt-5">
+        <Button className="bg-green-1 w-full sm:w-1/3 md:w-1/4">Print Medication</Button>
+        <Button
+          onClick={savePharmacistData}
+          className="w-full sm:w-1/3 md:w-1/4 bg-green-1"
+        >
           Continue
         </Button>
       </div>
