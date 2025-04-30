@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 export default function HomePage() {
   const router = useRouter();
   const [userRole, setUserRole] = useState<string | null>(null);
+  console.log(userRole)
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "null");
