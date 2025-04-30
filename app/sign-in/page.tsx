@@ -93,7 +93,7 @@ const SignIn = () => {
               id="username"
               type="text"
               value={username}
-              autoCorrect="none"
+              autoCapitalize="none"
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
