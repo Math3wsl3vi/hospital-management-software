@@ -80,11 +80,11 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center flex-col">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center">Welcome to HMS</CardTitle>
-          <p className="text-sm text-center text-muted-foreground">Login to continue</p>
+          <CardTitle className="text-center">Welcome to NOVAMED</CardTitle>
+          <p className="text-sm text-center text-muted-foreground">Use your credentials to login</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -93,6 +93,7 @@ const SignIn = () => {
               id="username"
               type="text"
               value={username}
+              autoCorrect="none"
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
@@ -120,6 +121,10 @@ const SignIn = () => {
           </Button>
         </CardFooter>
       </Card>
+
+      <div className="absolute bottom-5">
+        <h1>Powered by MantleAfya®</h1>
+      </div>
     </div>
   );
 };
