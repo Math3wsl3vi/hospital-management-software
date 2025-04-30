@@ -1,5 +1,4 @@
 import AppointmentTable from '@/components/AppointmentTable'
-// import BigCalender from '@/components/BigCalender'
 import DoctorAvailability from '@/components/DoctorAvailability'
 import HomeCalendar from '@/components/HomeCalendar'
 import ItemCards from '@/components/ItemCards'
@@ -16,11 +15,7 @@ const HomePage = () => {
       {/* item cards */}
       <ItemCards/>
       </div>
-      <div className='flex flex-row gap-5 min-h-full xl:flex-col'>
-         {/* calender */}
-         {/* <div className='flex-1 xl:min-h-screen'>
-         <BigCalender/>
-         </div> */}
+      <div className='flex flex-row gap-5 min-h-full xl:flex-col'>      
       {/* noticeboard */}
       <div>
       <NoticeBoard/>
