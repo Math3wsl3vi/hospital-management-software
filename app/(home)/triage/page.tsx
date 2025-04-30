@@ -10,7 +10,7 @@ const TriagePage = () => {
 
   return (
     <div className="font-poppins">
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-5">
       <h1 className="text-center text-xl mb-5">Welcome to Triage</h1>
       <div className="flex flex-row gap-1 items-center">
         <label className="text-xl">Bill:</label>
