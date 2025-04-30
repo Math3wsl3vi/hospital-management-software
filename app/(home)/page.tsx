@@ -1,3 +1,4 @@
+"use client"
 import AppointmentTable from '@/components/AppointmentTable'
 // import BigCalender from '@/components/BigCalender'
 import DoctorAvailability from '@/components/DoctorAvailability'
