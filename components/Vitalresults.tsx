@@ -4,35 +4,29 @@ import React from "react";
 
 const Vitalresults = () => {
   const { vitals } = useVitalsStore();
+
   return (
-    <div>
-      <div className="flex flex-row gap-5 justify-between lg:flex-wrap lg:justify-start">
-        <div className="w-[200px]">
-          <label className="">Weight (Kg)</label>
-          <h1 className="border rounded-md p-1 mt-2">{vitals.weight}</h1>
-        </div>
-        <div className="w-[200px]">
-          <label className="">height (cm)</label>
-          <h1 className="border rounded-md p-1 mt-2">{vitals.height}</h1>
-        </div>
-        <div className="w-[200px]">
-          <label>Temperature (C)</label>
-          <h1 className="border rounded-md p-1 mt-2">{vitals.temp}</h1>
-        </div>
-        <div className="w-[200px]">
-          <label>Blood Pressure</label>
-          <h1 className="border rounded-md p-1 mt-2">{vitals.bpm}</h1>
-        </div>
-        <div className="w-[200px]">
-          <label>Heart rate (BPM)</label>
-          <h1 className="border rounded-md p-1 mt-2">{vitals.heart}</h1>
-        </div>
-        <div className="w-[200px]">
-          <label>Respiratory Rate</label>
-          <h1 className="border rounded-md p-1 mt-2">{vitals.rate}</h1>
-        </div>
+    <div className="p-4">
+      <div className="flex flex-wrap gap-4 justify-start">
+        {[
+          { label: "Weight (Kg)", value: vitals.weight },
+          { label: "Height (cm)", value: vitals.height },
+          { label: "Temperature (°C)", value: vitals.temp },
+          { label: "Blood Pressure", value: vitals.bpm },
+          { label: "Heart Rate (BPM)", value: vitals.heart },
+          { label: "Respiratory Rate", value: vitals.rate },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="w-full sm:w-[48%] md:w-[30%] lg:w-[200px] min-w-[150px]"
+          >
+            <label className="block text-sm font-medium text-gray-700">{item.label}</label>
+            <h1 className="border rounded-md p-2 mt-1 text-gray-800 bg-white shadow-sm">
+              {item.value}
+            </h1>
+          </div>
+        ))}
       </div>
-     
     </div>
   );
 };

@@ -9,53 +9,38 @@ const TriageInput = ({
     phone: string;
     sex: string;
     dob: string;
-    email:string;
-    bloodGroup:string;
+    email: string;
+    bloodGroup: string;
   } | null;
 }) => {
-  return (
-    <div className="flex flex-col gap-5 w-full">
-      <div className="flex gap-10 w-full">
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Full Names</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md capitalize">
-            {selectedUser?.name || "N/A"}
-          </div>
-        </div>
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">National ID Number</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
-            {selectedUser?.id || "N/A"}
-          </div>
-        </div>
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Blood Group</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
-            {selectedUser?.bloodGroup || "N/A"}
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-10 w-full">
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Phone Number</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
-            {selectedUser?.phone || "N/A"}
-          </div>
-        </div>
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Sex</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md capitalize">
-            {selectedUser?.sex || "N/A"}
-          </div>
-        </div>
-        <div className="gap-2 flex flex-col w-1/2">
-          <label htmlFor="service">Email</label>
-          <div className="focus-visible:ring-0 focus-visible:ring-offset-0 border p-2 rounded-md">
-            {selectedUser?.email || "N/A"}
-          </div>
-        </div>
-      </div>
+  const fields = [
+    { label: "Full Names", value: selectedUser?.name, isCapitalize: true },
+    { label: "National ID Number", value: selectedUser?.id },
+    { label: "Blood Group", value: selectedUser?.bloodGroup },
+    { label: "Phone Number", value: selectedUser?.phone },
+    { label: "Sex", value: selectedUser?.sex, isCapitalize: true },
+    { label: "Email", value: selectedUser?.email },
+  ];
 
+  return (
+    <div className="flex flex-wrap gap-6 w-full">
+      {fields.map((field, index) => (
+        <div
+          key={index}
+          className="flex flex-col gap-2 w-full sm:w-[48%] md:w-[30%] min-w-[200px]"
+        >
+          <label htmlFor={field.label} className="text-sm font-medium">
+            {field.label}
+          </label>
+          <div
+            className={`border p-2 rounded-md text-gray-800 bg-white shadow-sm ${
+              field.isCapitalize ? "capitalize" : ""
+            }`}
+          >
+            {field.value ?? "N/A"}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

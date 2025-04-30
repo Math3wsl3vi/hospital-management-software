@@ -46,8 +46,8 @@ const DoctorNotes = () => {
 
   return (
     <>
-      <div className="flex gap-5 w-full">
-        <div className="w-1/3">
+      <div className="flex flex-col md:flex-row gap-5 w-full">
+        <div className="w-full md:w-1/3">
           <label>{"Patient's"} symptoms</label>
           <Textarea
             value={symptoms}
@@ -55,7 +55,7 @@ const DoctorNotes = () => {
             className="mt-3 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-44"
           />
         </div>
-        <div className="w-1/3">
+        <div className="w-full md:w-1/3">
           <label>Diagnosis</label>
           <Textarea
             value={diagnosis}
@@ -63,7 +63,7 @@ const DoctorNotes = () => {
             className="mt-3 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-44"
           />
         </div>
-        <div className="w-1/3">
+        <div className="w-full md:w-1/3">
             <label>Medication</label>
             <Textarea
               value={medication}
