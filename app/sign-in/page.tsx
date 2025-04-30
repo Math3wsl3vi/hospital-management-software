@@ -80,7 +80,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center flex-col">
+    <div className="flex min-h-screen items-center justify-center flex-col p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center">Welcome to NOVAMED</CardTitle>
