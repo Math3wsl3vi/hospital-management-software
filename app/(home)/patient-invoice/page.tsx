@@ -127,88 +127,66 @@ const PatientInvoice = () => {
   
 
   return (
-    <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container print:block">
+    <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container print:block p-4 md:p-10">
       {/* Invoice Header */}
       <div className="flex flex-row justify-between items-center">
         <div>
-          <h1 className="text-3xl">HMS</h1>
+          <h1 className="text-xl">N O V A M E D</h1>
         </div>
         <div>
           <h1 className="text-4xl font-semibold">INVOICE</h1>
         </div>
       </div>
-      <div className="flex flex-row justify-between items-center">
-        <div>
-          <p>P.O BOX 550 Lanet</p>
-          <p>Nakuru, kenya</p>
-          <p>
-            {" "}
-            <span className="font-semibold">Phone:</span> 0722 123 555
-          </p>
-          <p>
-            {" "}
-            <span className="font-semibold">Fax:</span> 432 5563 4902
-          </p>
-        </div>
-        <div>
-          <p>Invoice No: 001</p>
-          <p>
-            <span className="font-semibold">Date:</span> Feb, 1 2025
-          </p>
-        </div>
-      </div>
+      {/* address */}
+      <div className="flex flex-col md:flex-row justify-between gap-6 text-sm md:text-base">
+    <div>
+      <p>P.O BOX 550 Lanet</p>
+      <p>Nakuru, Kenya</p>
+      <p><span className="font-semibold">Phone:</span> 0722 123 555</p>
+      <p><span className="font-semibold">Fax:</span> 432 5563 4902</p>
+    </div>
+    <div>
+      <p>Invoice No: 001</p>
+      <p><span className="font-semibold">Date:</span> Feb, 1 2025</p>
+    </div>
+  </div>
       {/* Patient Details */}
       <div>
-        <h1 className="text-green-1 text-lg mb-4">PATIENT DETAILS</h1>
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-lg">
-            <p className="capitalize">
-              <span className="font-semibold uppercase">Name:</span> {selectedUser?.name}{" "}
-            </p>
-            <p className="capitalize">
-              <span className="font-semibold uppercase">Age:</span> 23
-            </p>
-            <p className="capitalize">
-              <span className="font-semibold uppercase ">Email:</span> {selectedUser?.email}{" "}
-            </p>
-          </div>
-          <div className="text-lg">
-            <p className="capitalize">
-              <span className="font-semibold uppercase">National Id:</span>{" "}
-              {selectedUser?.id}
-            </p>
-            <p className="capitalize">
-              <span className="font-semibold uppercase">Insurance Provider:</span>{" "}
-              {selectedUser?.insuranceProvider || 'N/A'}
-            </p>
-            <p className="capitalize">
-              <span className="font-semibold uppercase">insurance Number:</span>{" "}
-              {selectedUser?.insurancePolicyNumber || 'N/A'}
-            </p>
-          </div>
-        </div>
+    <h1 className="text-green-1 text-lg mb-4">PATIENT DETAILS</h1>
+    <div className="flex flex-col md:flex-row justify-between gap-6 text-sm md:text-base">
+      <div>
+        <p className="capitalize"><span className="font-semibold uppercase">Name:</span> {selectedUser?.name}</p>
+        <p className="capitalize"><span className="font-semibold uppercase">Age:</span> 23</p>
+        <p className="capitalize"><span className="font-semibold uppercase">Email:</span> {selectedUser?.email}</p>
       </div>
+      <div>
+        <p className="capitalize"><span className="font-semibold uppercase">National Id:</span> {selectedUser?.id}</p>
+        <p className="capitalize"><span className="font-semibold uppercase">Insurance Provider:</span> {selectedUser?.insuranceProvider || 'N/A'}</p>
+        <p className="capitalize"><span className="font-semibold uppercase">Insurance Number:</span> {selectedUser?.insurancePolicyNumber || 'N/A'}</p>
+      </div>
+    </div>
+  </div>
 
       {/* Invoice Table */}
-      <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">#</TableHead>
-            <TableHead>Service</TableHead>
-            <TableHead className="text-right">Amount (Ksh)</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>Consultation Fee</TableCell>
-            <TableCell className="text-right">
-              {consultationFee.toFixed(2)}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+        <div className="overflow-x-auto">
+    <Table>
+      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="min-w-[80px]">#</TableHead>
+          <TableHead>Service</TableHead>
+          <TableHead className="text-right">Amount (Ksh)</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell className="font-medium">INV001</TableCell>
+          <TableCell>Consultation Fee</TableCell>
+          <TableCell className="text-right">{consultationFee.toFixed(2)}</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  </div>
 
       {/* Medication Table */}
       <div>
@@ -245,7 +223,7 @@ const PatientInvoice = () => {
                   onChange={(e) => handleAmountChange(index, e.target.value)}
                 />
               </TableCell>
-              <TableCell className="w-[200px]">
+              <TableCell className="w-[200px] text-right">
                 {medicationAmounts[index]?.amount.toFixed(2)}
               </TableCell>
             </TableRow>
@@ -257,11 +235,11 @@ const PatientInvoice = () => {
 
       {/* Totals */}
       <div className="flex items-end justify-end">
-        <div className="w-1/2 flex flex-col gap-2">
+        <div className="w-full md:w-1/2 flex flex-col gap-2">
           <Table>
             <TableRow>
-              <TableCell>Total (Ksh)</TableCell>
-              <TableCell>{total.toFixed(2)}</TableCell>
+              <TableCell className="text-right">Total (Ksh)</TableCell>
+              <TableCell className="text-right">{total.toFixed(2)}</TableCell>
             </TableRow>
           </Table>
           <div className="flex justify-between items-center w-full gap-5 mt-10 print:hidden">
