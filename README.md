@@ -39,7 +39,7 @@ This project aims to develop a comprehensive **Hospital Management System (HMS)*
 ### **Android Application (Follow-up App)**
 
 - **Frontend**:
-  - **React Native/Flutter**: A framework for building native mobile applications using JavaScript and React. It allows for building iOS and Android apps with a single codebase.
+  - **React Native**: A framework for building native mobile applications using JavaScript and React. It allows for building iOS and Android apps with a single codebase.
   
 - **State Management**:
   - **Zustand**: Used to manage the application’s state, ensuring consistent data flow across screens.
