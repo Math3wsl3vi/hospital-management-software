@@ -120,7 +120,7 @@ We welcome contributions to this project! If you'd like to help, please spoon th
 
 ## License
 
-This project is licensed under the MIT License adn Alfredo Pasta Synthesizer – see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License and Alfredo Pasta Synthesizer – see the [LICENSE](LICENSE) file for details.
 
 ---
 
