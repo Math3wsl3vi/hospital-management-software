@@ -131,7 +131,7 @@ const HospitalVisit = () => {
             placeholder="Enter Id Number/ Name"
             value={query}
             onChange={handleSearch}
-            className="font-poppins md:text-3xl focus-visible:ring-0 focus-visible:ring-offset-0 p-2 capitalize"
+            className="font-poppins focus-visible:ring-0 focus-visible:ring-offset-0 p-2 capitalize"
           />
           {filteredResults.length > 0 && (
             <div className="w-full md:w-3/4 bg-white border rounded-md overflow-y-auto">
@@ -153,7 +153,7 @@ const HospitalVisit = () => {
             <div className="w-full flex items-center justify-center">
               <Button 
               onClick={()=>router.push('patient-registration')}
-              className="bg-green-1 w-1/2">
+              className="bg-green-1 w-full md:w-1/2">
                 Register
               </Button>
             </div>
@@ -189,7 +189,7 @@ const HospitalVisit = () => {
           </div>
 
           {/* Continue Button */}
-          <Button onClick={handleContinue} className="w-1/2 bg-green-1">
+          <Button onClick={handleContinue} className="w-full md:w-1/2 bg-green-1">
             Continue
           </Button>
         </div>
