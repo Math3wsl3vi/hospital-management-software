@@ -16,6 +16,8 @@ export const sidebarLinks = [
         imgUrl:'/images/check.png'
 
     },
+    { label: "Case Collaboration", route: "/cases", imgUrl: "/images/case.png", isDropdown: true },
+     { label: "Appointment Center", route: "/cases", imgUrl: "/images/case.png", isDropdown: true },
     {
         label: 'Records',
         route:'/Records',
@@ -46,6 +48,7 @@ export const sidebarLinks = [
         imgUrl:'/images/settings.png'
 
     },  
+     
 ]
 
 export const ItemCard = [
