@@ -34,26 +34,29 @@ const PatientInvoice = () => {
   const { toast } = useToast();
   const invoiceRef = useRef(null);
 
-  // Parse medication data
-  const medications = docNotes.medication?.split(",").map((med) => {
-    const [name, dosage, frequency, days, amount, quantity, typeName, typeIcon] = med.split("-");
-    return {
-      name,
-      dosage,
-      frequency,
-      days: parseInt(days),
-      amount: parseFloat(amount),
-      quantity: parseInt(quantity),
-      type: { name: typeName, icon: typeIcon },
-    };
-  }) || [];
+  // Parse medication data with validation
+  const medications = (docNotes.medication || "")
+    .split(",")
+    .filter((med) => med.trim() !== "") // Remove empty entries
+    .map((med) => {
+      const [name = "", dosage = "", frequency = "", days = "0", amount = "0", quantity = "0", typeName = "Unknown", typeIcon = ""] = med.split("-");
+      return {
+        name: name || "Unknown Medication",
+        dosage: dosage || "N/A",
+        frequency: frequency || "N/A",
+        days: parseInt(days) || 0,
+        amount: parseFloat(amount) || 0,
+        quantity: parseInt(quantity) || 0,
+        type: { name: typeName || "Unknown", icon: typeIcon || "" },
+      };
+    });
 
   // State for amount and quantity inputs
   const [medicationAmounts, setMedicationAmounts] = useState(
     medications.map((med) => ({ amount: med.amount || 0 }))
   );
   const [medicationQuantities, setMedicationQuantities] = useState(
-    medications.map((med) => ({ quantity: med.quantity.toString() }))
+    medications.map((med) => ({ quantity: med.quantity.toString() || "0" }))
   );
 
   const consultationFee = 250;
@@ -71,7 +74,7 @@ const PatientInvoice = () => {
 
   const handleQuantityChange = (index: number, value: string) => {
     const updatedQuantities = [...medicationQuantities];
-    updatedQuantities[index].quantity = value;
+    updatedQuantities[index].quantity = value || "0"; // Default to "0" if empty
     setMedicationQuantities(updatedQuantities);
   };
 
@@ -90,9 +93,9 @@ const PatientInvoice = () => {
 
       // Store Visit Metadata
       await setDoc(visitRef, {
-        patientId: selectedUser?.id,
-        patientName: selectedUser?.name,
-        patientEmail: selectedUser?.email,
+        patientId: selectedUser?.id || "",
+        patientName: selectedUser?.name || "",
+        patientEmail: selectedUser?.email || "",
         consultationFee,
         totalAmount: total,
         visitId,
@@ -103,6 +106,10 @@ const PatientInvoice = () => {
       const medicationsCollection = collection(visitRef, "medications");
       await Promise.all(
         medications.map(async (med, index) => {
+          const quantity = parseInt(medicationQuantities[index]?.quantity) || 0;
+          if (quantity < 0 || isNaN(quantity)) {
+            throw new Error(`Invalid quantity for ${med.name}`);
+          }
           const reminderTimes = calculateReminderTimes(med.frequency, "07:00");
           await addDoc(medicationsCollection, {
             name: med.name,
@@ -110,8 +117,11 @@ const PatientInvoice = () => {
             frequency: med.frequency,
             days: med.days,
             amount: medicationAmounts[index]?.amount || 0,
-            quantity: parseInt(medicationQuantities[index]?.quantity) || 0,
-            type: med.type,
+            quantity,
+            type: {
+              name: med.type.name || "Unknown",
+              icon: med.type.icon || "",
+            },
             userEmail: selectedUser.email,
             visitId,
             createdAt: new Date().toISOString(),
@@ -124,7 +134,7 @@ const PatientInvoice = () => {
       toast({ description: "Medication sent to the app. Login to view!" });
     } catch (error) {
       console.error("Error saving invoice:", error);
-      toast({ description: "Failed to save invoice.", variant: "destructive" });
+      toast({ description: `Failed to save invoice`, variant: "destructive" });
     }
   };
 
@@ -134,6 +144,7 @@ const PatientInvoice = () => {
       <div className="flex flex-row justify-between items-center">
         <div>
           <h1 className="text-xl">R I V I A M E D</h1>
+          <p>Health Systems</p>
         </div>
         <div>
           <h1 className="text-4xl font-semibold">INVOICE</h1>
@@ -157,14 +168,14 @@ const PatientInvoice = () => {
         <h1 className="text-green-1 text-lg mb-4">PATIENT DETAILS</h1>
         <div className="flex flex-col md:flex-row justify-between gap-6 text-sm md:text-base">
           <div>
-            <p className="capitalize"><span className="font-semibold uppercase">Name:</span> {selectedUser?.name}</p>
+            <p className="capitalize"><span className="font-semibold uppercase">Name:</span> {selectedUser?.name || "N/A"}</p>
             <p className="capitalize"><span className="font-semibold uppercase">Age:</span> 23</p>
-            <p className="capitalize"><span className="font-semibold uppercase">Email:</span> {selectedUser?.email}</p>
+            <p className="capitalize"><span className="font-semibold uppercase">Email:</span> {selectedUser?.email || "N/A"}</p>
           </div>
           <div>
-            <p className="capitalize"><span className="font-semibold uppercase">National Id:</span> {selectedUser?.id}</p>
-            <p className="capitalize"><span className="font-semibold uppercase">Insurance Provider:</span> {selectedUser?.insuranceProvider || 'N/A'}</p>
-            <p className="capitalize"><span className="font-semibold uppercase">Insurance Number:</span> {selectedUser?.insurancePolicyNumber || 'N/A'}</p>
+            <p className="capitalize"><span className="font-semibold uppercase">National Id:</span> {selectedUser?.id || "N/A"}</p>
+            <p className="capitalize"><span className="font-semibold uppercase">Insurance Provider:</span> {selectedUser?.insuranceProvider || "N/A"}</p>
+            <p className="capitalize"><span className="font-semibold uppercase">Insurance Number:</span> {selectedUser?.insurancePolicyNumber || "N/A"}</p>
           </div>
         </div>
       </div>
@@ -209,6 +220,8 @@ const PatientInvoice = () => {
                 <TableCell>{med.dosage}</TableCell>
                 <TableCell className="w-[200px]">
                   <Input
+                    type="number"
+                    min="0"
                     placeholder="Quantity"
                     value={medicationQuantities[index]?.quantity || ""}
                     onChange={(e) => handleQuantityChange(index, e.target.value)}
@@ -216,8 +229,10 @@ const PatientInvoice = () => {
                 </TableCell>
                 <TableCell className="w-[200px]">
                   <Input
-                    placeholder="Subtotal"
                     type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Subtotal"
                     value={medicationAmounts[index]?.amount || ""}
                     onChange={(e) => handleAmountChange(index, e.target.value)}
                   />
