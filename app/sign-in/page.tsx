@@ -83,7 +83,7 @@ const SignIn = () => {
     <div className="flex min-h-screen items-center justify-center flex-col p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center">Welcome to NOVAMED</CardTitle>
+          <CardTitle className="text-center">Welcome to riviamed</CardTitle>
           <p className="text-sm text-center text-muted-foreground">Use your credentials to login</p>
         </CardHeader>
         <CardContent className="space-y-4">

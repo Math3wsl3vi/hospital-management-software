@@ -21,14 +21,14 @@ export default function HomePage() {
       {/* Header */}
       <header className="bg-slate-50 w-full py-4 px-6 shadow-sm">
         <Link href="/" className="text-2xl text-black uppercase font-poppins">
-          N o v a M e d
+          R I V I A M E D
         </Link>
       </header>
 
       {/* Main Section */}
       <main className="flex-1 container mx-auto px-4 py-12 flex flex-col items-center">
         <section className="text-center max-w-3xl mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to NovaMed Systems</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to riviamed Systems</h1>
           <p className="text-lg text-gray-600">Please log in to access the hospital management system.</p>
         </section>
 
@@ -48,7 +48,7 @@ export default function HomePage() {
 
         {/* Registration Card */}
         <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-md text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">New to NovaMed?</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">New to riviamed?</h3>
           <p className="text-gray-600 mb-6">Create a new account or contact the administration for assistance.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button onClick={() => router.push("/sign-up")} className="bg-green-1 px-8 py-4 text-lg">

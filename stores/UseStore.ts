@@ -11,6 +11,8 @@ interface User {
   bloodGroup:string;
   insuranceProvider:string;
   insurancePolicyNumber:string;
+  medicalHistory?: string;
+  allergies?: string;
 }
 
 interface UserState {

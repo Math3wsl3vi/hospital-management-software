@@ -1,14 +1,14 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   experimental: {
     serverActions: {}
   },
-  // Add output configuration
   output: 'standalone',
-    output: 'standalone',
   swcMinify: true,
   typescript: {
     ignoreBuildErrors: true
   }
 };
 
-module.exports = nextConfig;
+export default nextConfig;

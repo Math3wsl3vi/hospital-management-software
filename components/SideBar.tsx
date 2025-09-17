@@ -75,7 +75,8 @@ const SideBar = () => {
         <div className="flex gap-5 flex-col mt-10">
           {sidebarLinks.map((item) => {
             const isActive =
-              pathname === item.route || pathname.startsWith(`${item.route}/`);
+                (pathname ?? "") === item.route || (pathname ?? "").startsWith(`${item.route}/`);
+
 
             if (item.label === "Hospital Visit") {
               return (
@@ -143,20 +144,14 @@ const SideBar = () => {
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent className="bg-[#21263c] text-white border-none w-[250px] font-poppins">
-                    <DropdownMenuItem className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/upload" onClick={() => setIsOpen(false)}>📂 Case Upload</Link>
-                    </DropdownMenuItem>
                     <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/multidisciplinary" onClick={() => setIsOpen(false)}>👨‍⚕️ Specialist Board</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/decision-support" onClick={() => setIsOpen(false)}>⚕️ Decision Support</Link>
+                      <Link href="/cases/multidisciplinary" onClick={() => setIsOpen(false)}>👨‍⚕️ Multidiscplinary Board</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
                       <Link href="/cases/conferences" onClick={() => setIsOpen(false)}>🎥 Conferences</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/education" onClick={() => setIsOpen(false)}>🎓 Education Mode</Link>
+                      <Link href="/cases/education" onClick={() => setIsOpen(false)}>🎓 CME</Link>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

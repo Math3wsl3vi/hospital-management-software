@@ -4,7 +4,7 @@ import { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "Novamed",
+  title: "riviamed",
   description: "Hospital Management System and Smart Health Reminder",
 };
 

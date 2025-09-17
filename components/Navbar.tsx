@@ -58,7 +58,7 @@ const Navbar = () => {
             onClick={handleLogoClick}
             className="text-xl font-poppins text-white uppercase max-md:text-lg hover:opacity-80 transition-opacity"
           >
-            N o v a M e d
+            R I V I A M E D
           </button>
         </div>
       </div>
