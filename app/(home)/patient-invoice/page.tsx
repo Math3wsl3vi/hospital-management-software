@@ -37,13 +37,13 @@ const PatientInvoice = () => {
   // Parse medication data with validation
   const medications = (docNotes.medication || "")
     .split(",")
-    .filter((med) => med.trim() !== "") // Remove empty entries
+    .filter((med) => med.trim() !== "")
     .map((med) => {
       const [name = "", dosage = "", frequency = "", days = "0", amount = "0", quantity = "0", typeName = "Unknown", typeIcon = ""] = med.split("-");
       return {
         name: name || "Unknown Medication",
         dosage: dosage || "N/A",
-        frequency: frequency || "N/A",
+        frequency: frequency || "Once daily", // Default frequency
         days: parseInt(days) || 0,
         amount: parseFloat(amount) || 0,
         quantity: parseInt(quantity) || 0,
@@ -74,7 +74,7 @@ const PatientInvoice = () => {
 
   const handleQuantityChange = (index: number, value: string) => {
     const updatedQuantities = [...medicationQuantities];
-    updatedQuantities[index].quantity = value || "0"; // Default to "0" if empty
+    updatedQuantities[index].quantity = value || "0";
     setMedicationQuantities(updatedQuantities);
   };
 
@@ -111,6 +111,9 @@ const PatientInvoice = () => {
             throw new Error(`Invalid quantity for ${med.name}`);
           }
           const reminderTimes = calculateReminderTimes(med.frequency, "07:00");
+          if (!reminderTimes || reminderTimes.length === 0) {
+            throw new Error(`Invalid reminderTimes for ${med.name}`);
+          }
           await addDoc(medicationsCollection, {
             name: med.name,
             dosage: med.dosage,
