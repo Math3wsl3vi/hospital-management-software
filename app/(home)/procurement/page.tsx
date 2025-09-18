@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
 
 interface ProcurementRequest {
   id: string;
@@ -31,6 +32,7 @@ interface ProcurementRequest {
 }
 
 const Procurement = () => {
+  const router = useRouter()
   const [requests, setRequests] = useState<ProcurementRequest[]>([]);
   const [newRequest, setNewRequest] = useState({
     item: "",
@@ -262,6 +264,12 @@ const Procurement = () => {
           </Select>
           <Button type="submit" className="bg-green-600 hover:bg-green-700">Submit Request</Button>
         </form>
+      </div>
+
+      <div className="py-4">
+        <Button 
+        onClick={()=>router.push('/addMedication')}
+        className="bg-green-1">Add Medication</Button>
       </div>
 
       {/* Tabs for Procurement Requests */}

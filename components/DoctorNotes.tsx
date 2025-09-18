@@ -1,15 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Textarea } from "./ui/textarea";
 import { useDocNotesStore } from "@/stores/MedicationStore";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "@/configs/firebase.config";
 import { useUserStore } from "@/stores/UseStore";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, AlertCircle, CheckCircle } from "lucide-react";
 import { useVitalsStore } from "@/stores/VitalsStore";
+
+// Define types for medication inventory
+interface MedicationItem {
+  id: string;
+  name?: string;
+  quantity?: number;
+  price?: number;
+  description?: string;
+  expiry?: string;
+  // Add other relevant fields from your Firebase document structure
+}
+
+interface AvailabilityInfo {
+  available: boolean;
+  quantity: number;
+  // Add other relevant fields
+}
 
 const DoctorNotes = () => {
   const [symptoms, setSymptoms] = useState("");
@@ -17,6 +34,9 @@ const DoctorNotes = () => {
   const [medication, setMedication] = useState("");
   const [aiRecommendation, setAiRecommendation] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [inventory, setInventory] = useState<MedicationItem[]>([]);
+  const [availability, setAvailability] = useState<Record<string, AvailabilityInfo | null>>({});
+  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const { toast } = useToast();
   const { vitals } = useVitalsStore();
   
@@ -26,8 +46,72 @@ const DoctorNotes = () => {
 
   const patientId = selectedUser?.id?.toString();
 
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "medications"));
+        const meds = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as MedicationItem[];
+        setInventory(meds);
+      } catch (error) {
+        console.error("Error fetching medication inventory:", error);
+        toast({
+          description: "Failed to fetch medication inventory. Please try again.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchInventory();
+  }, [toast]);
+
+  const checkAvailability = () => {
+    if (!medication.trim()) {
+      toast({
+        description: "Please enter medications first to check availability",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsCheckingAvailability(true);
+    const meds = medication
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line)
+      .map((line) => {
+        // Rough parsing: assume first word/part before space/comma is the medication name
+        return line.split(/[\s,]+/)[0].toLowerCase();
+      });
+
+    const avail: Record<string, AvailabilityInfo | null> = {};
+    meds.forEach((medName) => {
+      const found = inventory.find((item) => item.name?.toLowerCase() === medName);
+      if (found) {
+        avail[medName] = {
+          available: (found.quantity || 0) > 0,
+          quantity: found.quantity || 0,
+          // Add any other relevant fields from your Firebase document structure
+          // e.g., price: found.price, description: found.description, expiry: found.expiry
+        };
+      } else {
+        avail[medName] = null;
+      }
+    });
+
+    setAvailability(avail);
+    setIsCheckingAvailability(false);
+
+    toast({
+      description: "Medication availability checked successfully!",
+      duration: 3000,
+    });
+  };
+
   // Generate AI recommendation using Google Gemini
-const generateAIRecommendation = async () => {
+  const generateAIRecommendation = async () => {
     if (!symptoms.trim()) {
       toast({
         description: "Please enter symptoms first to generate AI recommendations",
@@ -261,6 +345,47 @@ const generateAIRecommendation = async () => {
             className="mt-3 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-44"
             placeholder="Prescribe medications..."
           />
+          <div className="mt-4">
+            <Button 
+              onClick={checkAvailability}
+              disabled={isCheckingAvailability || !medication.trim()}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              {isCheckingAvailability ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Checking...
+                </>
+              ) : (
+                "Check Inventory Availability"
+              )}
+            </Button>
+          </div>
+          {Object.keys(availability).length > 0 && (
+            <div className="mt-4 p-4 border rounded-lg bg-gray-50">
+              <h3 className="text-md font-semibold mb-2">Medication Availability</h3>
+              <div className="space-y-2">
+                {Object.entries(availability).map(([medName, info]) => (
+                  <div key={medName} className="text-sm">
+                    <span className="font-medium">{medName}:</span>{" "}
+                    {info ? (
+                      info.available ? (
+                        <span className="text-green-600">
+                          Available (Quantity: {info.quantity})
+                          {/* Add other relevant info here, e.g., Price: {info.price}, Description: {info.description} */}
+                        </span>
+                      ) : (
+                        <span className="text-red-600">Out of stock (Quantity: {info.quantity})</span>
+                      )
+                    ) : (
+                      <span className="text-red-600">Not found in inventory</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>  
       </div>
 
