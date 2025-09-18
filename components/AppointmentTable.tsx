@@ -169,9 +169,9 @@ const AppointmentTable = () => {
         <TableBody>
           {appointments.map((appt) => (
             <TableRow key={appt.id}>
-              <TableCell>{appt.patient}</TableCell>
-              <TableCell>{appt.doctor}</TableCell>
-              <TableCell>{appt.checkup}</TableCell>
+              <TableCell className="capitalize">{appt.patient}</TableCell>
+              <TableCell className="capitalize">{appt.doctor}</TableCell>
+              <TableCell className="capitalize">{appt.checkup}</TableCell>
               <TableCell>{formatTimestamp(appt.date)}</TableCell>
               <TableCell>{appt.time}</TableCell>
               <TableCell>{appt.status}</TableCell>

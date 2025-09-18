@@ -199,7 +199,9 @@ const RiviaAI = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">RiviaAI Hospital Analytics</h1>
-        <Button onClick={generateInsights} disabled={isAnalyzing}>
+        <Button 
+        className='bg-green-1'
+        onClick={generateInsights} disabled={isAnalyzing}>
           {isAnalyzing ? 'Analyzing...' : 'Generate AI Insights'}
         </Button>
       </div>
@@ -228,9 +230,9 @@ const RiviaAI = () => {
               <TableBody>
                 {upcomingAppointments.slice(0, 10).map((appt) => (
                   <TableRow key={appt.id}>
-                    <TableCell>{appt.patient}</TableCell>
-                    <TableCell>{appt.doctor}</TableCell>
-                    <TableCell>{appt.checkup}</TableCell>
+                    <TableCell className="capitalize">{appt.patient}</TableCell>
+                    <TableCell className="capitalize">{appt.doctor}</TableCell>
+                    <TableCell className="capitalize">{appt.checkup}</TableCell>
                     <TableCell>{appt.date.toDate().toLocaleDateString()}</TableCell>
                     <TableCell>{appt.time}</TableCell>
                     <TableCell>
@@ -258,7 +260,7 @@ const RiviaAI = () => {
               {medicationTrends.slice(0, 5).map((trend, idx) => (
                 <li key={idx} className="flex justify-between">
                   <span>{trend.med}</span>
-                  <Badge>{trend.count} prescriptions</Badge>
+                  <Badge className='bg-green-1'>{trend.count} prescriptions</Badge>
                 </li>
               ))}
             </ul>
