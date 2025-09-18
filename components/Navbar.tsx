@@ -56,7 +56,7 @@ const Navbar = () => {
         <div className="rounded-bl-xl bg-[#181c2e] md:w-[250px] h-full pl-16 md:pl-4 pt-4 max-md:w-[200px]">
           <button 
             onClick={handleLogoClick}
-            className="text-xl font-poppins text-white uppercase max-md:text-lg hover:opacity-80 transition-opacity"
+            className="text-2xl font-poppins text-white uppercase max-md:text-lg hover:opacity-80 transition-opacity"
           >
             R I V I A M E D
           </button>
@@ -78,9 +78,6 @@ const Navbar = () => {
         </div>
         <div className="flex gap-5 flex-row">
           <div className="flex gap-5 flex-row items-center justify-center">
-            <div className="items-center border p-2 rounded-md cursor-pointer">
-              <h1>Hospital Name</h1>
-            </div>
             <div className="flex items-center gap-5">
               <div className="cursor-pointer hover:bg-white hover:border hover:p-2 hover:rounded-full">
                 <Image
