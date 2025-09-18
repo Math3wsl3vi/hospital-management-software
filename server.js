@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI('AIzaSyB_up1_lqDmPfZUsHqzkpQBkzV03olkeFs');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 // Middleware
 app.use(cors({
@@ -86,15 +86,73 @@ Respond ONLY in JSON with { "flags": [ ... ] } format.`;
 
 
 
+// Hospital analytics endpoint
 app.post('/api/hospital-analytics', async (req, res) => {
-  const { upcomingApptsCount, medicationTrends, procurementStock, analysisDate } = req.body;
-  const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash' });
-  const prompt = `Analyze hospital analytics as of ${analysisDate}: Upcoming appointments: ${upcomingApptsCount}. Medication trends: ${medicationTrends}. Stock: ${procurementStock}. Provide 3-5 insights on trends, potential shortages, patient load. Respond in JSON: { insights: [{ title: '...', description: '...', type: 'trend|warning|recommendation' }] }`;
-  const result = await model.generateContent(prompt);
-  const response = await result.response.text();
-  res.json(JSON.parse(response))
-  res.json(JSON.parse(result.response.text()));
+  try {
+    const { upcomingApptsCount, medicationTrends, procurementStock, analysisDate } = req.body;
+
+    // ✅ Input validation
+    if (
+      upcomingApptsCount === undefined ||
+      !medicationTrends ||
+      !procurementStock ||
+      !analysisDate
+    ) {
+      return res.status(400).json({
+        error: 'Missing required fields: upcomingApptsCount, medicationTrends, procurementStock, analysisDate',
+      });
+    }
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
+    const prompt = `
+You are a hospital data analyst AI. 
+Analyze hospital analytics as of ${analysisDate}:
+
+- Upcoming appointments: ${upcomingApptsCount}
+- Medication trends: ${medicationTrends}
+- Procurement stock: ${procurementStock}
+
+Provide **3–5 concise insights** covering:
+- Trends (e.g., increasing demand, seasonal patterns)
+- Warnings (e.g., potential shortages, high patient load)
+- Recommendations (e.g., resupply, staffing, efficiency)
+
+Respond ONLY in JSON, format:
+{
+  "insights": [
+    { "title": "...", "description": "...", "type": "trend|warning|recommendation" }
+  ]
+}`;
+
+    const result = await model.generateContent(prompt);
+    let responseText = result.response.text().trim();
+
+    // 🧹 Clean markdown fences if Gemini still adds them
+    responseText = responseText.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(responseText);
+    } catch (err) {
+      console.error('Error parsing AI JSON:', err);
+      console.error('Raw response:', responseText);
+      return res.status(500).json({
+        error: 'Invalid JSON returned from AI',
+        raw: responseText,
+      });
+    }
+
+    res.json(parsed);
+  } catch (err) {
+    console.error('Error analyzing hospital analytics:', err);
+    res.status(500).json({
+      error: 'Failed to analyze hospital analytics',
+      details: err.message,
+    });
+  }
 });
+
 
 // AI recommendation endpoint
 app.post('/api/ai-recommendation', async (req, res) => {

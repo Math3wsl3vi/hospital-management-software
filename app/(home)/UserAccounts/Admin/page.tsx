@@ -1,8 +1,8 @@
-import AppointmentTable from '@/components/AppointmentTable'
 // import BigCalender from '@/components/BigCalender'
 import DoctorAvailability from '@/components/DoctorAvailability'
 import HomeCalendar from '@/components/HomeCalendar'
 import ItemCards from '@/components/ItemCards'
+import MainAppointments from '@/components/MainAppontments'
 import NoticeBoard from '@/components/NoticeBoard'
 import React from 'react'
 
@@ -22,7 +22,7 @@ const HomePage = () => {
       </div>
       </div>
       <div className='flex flex-col gap-5 min-h-full items-start'>
-        <AppointmentTable/>
+        <MainAppointments/>
         <DoctorAvailability/>
       </div>
      

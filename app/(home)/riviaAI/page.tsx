@@ -151,7 +151,7 @@ const RiviaAI = () => {
     const stockSummary = procurementData.map(p => `${p.medication}: ${p.quantity}`).join('; ');
 
     try {
-      const response = await fetch('/api/hospital-analytics', {
+      const response = await fetch('https://riviamedsystem.vercel.app/api/hospital-analytics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

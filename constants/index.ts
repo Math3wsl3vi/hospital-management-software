@@ -86,8 +86,8 @@ export const ItemCard = [
     }, 
     {
         id:'6',
-        name: 'Departments',
-        icon: '/images/corporation.png',
+        name: 'RiviaAI',
+        icon: '/images/clean.png',
         route:'/departments',
     },
     {

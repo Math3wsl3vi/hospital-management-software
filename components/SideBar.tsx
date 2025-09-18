@@ -103,7 +103,7 @@ const SideBar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-[#21263c] text-white border-none w-[250px] font-poppins">
                     <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
-                      <Link href={'/Reception'} onClick={() => setIsOpen(false)}>Reception</Link>
+                      <Link href={'/hospital-visit'} onClick={() => setIsOpen(false)}>Reception</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="w-full cursor-pointer hover:bg-green-1 text-sm mb-2">
                       <Link href={'/triage'} onClick={() => setIsOpen(false)}>Triage</Link>
