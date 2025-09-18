@@ -122,42 +122,6 @@ const SideBar = () => {
               );
             }
 
-            if (item.label === "Case Collaboration") {
-              return (
-                <DropdownMenu key={item.route}>
-                  <DropdownMenuTrigger asChild>
-                    <div
-                      className={cn(
-                        "flex items-center gap-6 justify-start p-3 rounded-xl cursor-pointer",
-                        { "bg-green-1 text-white": isActive }
-                      )}
-                    >
-                      <Image
-                        src={item.imgUrl}
-                        alt="case"
-                        width={20}
-                        height={20}
-                        style={{ filter: "invert(1) sepia(1) saturate(10) hue-rotate(200deg)" }}
-                      />
-                      <p className="font-poppins text-sm">{item.label}</p>
-                    </div>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent className="bg-[#21263c] text-white border-none w-[250px] font-poppins">
-                    <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/multidisciplinary" onClick={() => setIsOpen(false)}>👨‍⚕️ Multidiscplinary Board</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/conferences" onClick={() => setIsOpen(false)}>🎥 Conferences</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem  className="mb-2 w-full cursor-pointer hover:bg-green-1 text-sm">
-                      <Link href="/cases/education" onClick={() => setIsOpen(false)}>🎓 CME</Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              );
-            }
-
             if (item.label === "Home") {
               return (
                 <button

@@ -16,7 +16,7 @@ export const sidebarLinks = [
         imgUrl:'/images/check.png'
 
     },
-    { label: "Case Collaboration", route: "/cases", imgUrl: "/images/case.png", isDropdown: true },
+    { label: "Multidicplinary Board", route: "/multidiscplinary", imgUrl: "/images/case.png", isDropdown: true },
      { label: "Appointment Center", route: "/appointments", imgUrl: "/images/case.png", isDropdown: true },
      { label: "RiviaMed AI", route: "/riviaAI", imgUrl: "/images/clean.png", isDropdown: true },
 

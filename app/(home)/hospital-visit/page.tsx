@@ -198,7 +198,7 @@ const HospitalVisit = () => {
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent className="font-poppins">
             <h1 className="font-poppins text-center mb-5 text-lg">
-              Welcome to Lanet Regional Hospital{" "}
+              Welcome {" "}
               <span className="font-semibold capitalize">
                  {selectedUser?.name}
               </span>

@@ -1,29 +1,34 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+
+// In MedicationStore.ts
+interface PrescribedMedication {
+  id: string;
+  medicationId: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions?: string;
+  available: boolean;
+  quantityAvailable: number;
+  quantityPrescribed: number;
+}
 
 interface DocNotes {
-    symptoms: string;
-    medication: string;
-    diagnosis:string;
+  symptoms: string;
+  diagnosis: string;
+  medication: string;
+  prescribedMedications: PrescribedMedication[];
+  buddyData: { name: string; buddy: string; remarks: string }[];
+  aiRecommendation?: string;
 }
 
-interface DocNotesState {
-     docNotes:DocNotes;
-     setDocNotes :(docNotes :DocNotes) => void;
+interface DocNotesStore {
+  docNotes: DocNotes | null;
+  setDocNotes: (notes: DocNotes | null) => void;
 }
 
-export const useDocNotesStore = create<DocNotesState>()(
-    persist(
-        (set) => ({
-            docNotes: {
-                symptoms: '',
-                medication: '',
-                diagnosis: ''
-            },
-            setDocNotes: (docNotes) => set({docNotes})
-        }),
-        {
-            name: 'docNotes-storage',
-        }
-    )
-)
+export const useDocNotesStore = create<DocNotesStore>((set) => ({
+  docNotes: null,
+  setDocNotes: (notes) => set({ docNotes: notes }),
+}));

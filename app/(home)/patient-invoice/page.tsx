@@ -1,6 +1,6 @@
 "use client";
 import { useUserStore } from "@/stores/UseStore";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -25,8 +25,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { calculateReminderTimes } from "@/services/reminderTimes";
+
+
 
 const PatientInvoice = () => {
   const selectedUser = useUserStore((state) => state.selectedUser);
@@ -35,132 +39,132 @@ const PatientInvoice = () => {
   const invoiceRef = useRef(null);
 
   // Parse medication data with validation
-  const medications = (docNotes.medication || "")
-    .split(",")
-    .filter((med) => med.trim() !== "")
-    .map((med) => {
-      const [name = "", dosage = "", frequency = "", days = "0", amount = "0", quantity = "0", typeName = "Unknown", typeIcon = ""] = med.split("-");
-      return {
-        name: name || "Unknown Medication",
-        dosage: dosage || "N/A",
-        frequency: frequency || "Once daily", // Default frequency
-        days: parseInt(days) || 0,
-        amount: parseFloat(amount) || 0,
-        quantity: parseInt(quantity) || 0,
-        type: { name: typeName || "Unknown", icon: typeIcon || "" },
-      };
-    });
+  const medications = docNotes?.prescribedMedications?.map((med) => ({
+    name: med.name || "Unknown Medication",
+    dosage: med.dosage || "N/A",
+    frequency: med.frequency || "Once daily",
+    days: parseInt(med.duration) || 0,
+    amount: parseFloat(med.quantityPrescribed.toString()) || 0,
+    quantity: parseInt(med.quantityPrescribed.toString()) || 0,
+    type: { name: "Unknown", icon: "" },
+  })) || [];
 
   // State for amount and quantity inputs
   const [medicationAmounts, setMedicationAmounts] = useState(
-    medications.map((med) => ({ amount: med.amount || 0 }))
+    medications.map((med) => ({ amount: med.amount.toString() || "0" }))
   );
   const [medicationQuantities, setMedicationQuantities] = useState(
     medications.map((med) => ({ quantity: med.quantity.toString() || "0" }))
   );
 
+  // Debug medications
+  useEffect(() => {
+    console.log("docNotes:", docNotes);
+    console.log("Medications:", medications);
+    console.log("medicationAmounts:", medicationAmounts);
+    console.log("medicationQuantities:", medicationQuantities);
+  }, [docNotes, medications, medicationAmounts, medicationQuantities]);
+
   const consultationFee = 250;
 
   const total =
-    medicationAmounts.reduce((sum, med) => sum + (med.amount || 0), 0) +
+    medicationAmounts.reduce((sum, med) => sum + (parseFloat(med.amount) || 0), 0) +
     consultationFee;
 
   // Handle amount and quantity changes
   const handleAmountChange = (index: number, value: string) => {
+    const amount = parseFloat(value) || 0;
+    if (amount < 0) {
+      toast({ description: "Amount cannot be negative", variant: "destructive" });
+      return;
+    }
     const updatedAmounts = [...medicationAmounts];
-    updatedAmounts[index].amount = parseFloat(value) || 0;
+    updatedAmounts[index].amount = amount.toString();
     setMedicationAmounts(updatedAmounts);
   };
 
   const handleQuantityChange = (index: number, value: string) => {
+    const quantity = parseInt(value) || 0;
+    if (quantity < 0) {
+      toast({ description: "Quantity cannot be negative", variant: "destructive" });
+      return;
+    }
     const updatedQuantities = [...medicationQuantities];
-    updatedQuantities[index].quantity = value || "0";
+    updatedQuantities[index].quantity = quantity.toString();
     setMedicationQuantities(updatedQuantities);
   };
 
   // Save invoice to Firebase
-const saveInvoice = async () => {
-  try {
-    if (!selectedUser?.email) {
-      toast({ description: "No patient email found!", variant: "destructive" });
-      return;
+  const saveInvoice = async () => {
+    try {
+      if (!selectedUser?.email) {
+        toast({ description: "No patient email found!", variant: "destructive" });
+        return;
+      }
+
+      const visitId = `visit_${Date.now()}`;
+      const emailKey = selectedUser.email.replace(/[@.]/g, "_");
+      const patientRef = doc(db, "patient-medication", emailKey);
+      const visitRef = doc(collection(patientRef, "visits"), visitId);
+
+      // Store Visit Metadata
+      await setDoc(visitRef, {
+        patientId: selectedUser?.id || "",
+        patientName: selectedUser?.name || "",
+        patientEmail: selectedUser?.email || "",
+        consultationFee,
+        totalAmount: total,
+        visitId,
+        visitDate: new Date().toISOString(),
+        status: "active",
+      });
+
+      // Store medications with proper structure
+      const medicationsCollection = collection(visitRef, "medications");
+      await Promise.all(
+        medications.map(async (med, index) => {
+          const quantity = parseInt(medicationQuantities[index]?.quantity) || 0;
+          if (quantity < 0 || isNaN(quantity)) {
+            throw new Error(`Invalid quantity for ${med.name}`);
+          }
+
+          const reminderTimes = calculateReminderTimes(med.frequency, "07:00");
+          if (!reminderTimes || reminderTimes.length === 0) {
+            throw new Error(`Invalid reminderTimes for ${med.name}`);
+          }
+
+          await addDoc(medicationsCollection, {
+            name: med.name,
+            dosage: med.dosage,
+            frequency: med.frequency,
+            days: med.days,
+            duration: med.days,
+            amount: parseFloat(medicationAmounts[index]?.amount) || 0,
+            quantity,
+            type: {
+              name: med.type.name || "Unknown",
+              icon: med.type.icon || "",
+            },
+            userEmail: selectedUser.email,
+            visitId,
+            reminderTimes,
+            takenToday: new Array(reminderTimes.length).fill(false),
+            createdAt: new Date().toISOString(),
+            status: "active",
+          });
+        })
+      );
+
+      toast({ description: "Medication sent to the app. Login to view!" });
+    } catch (error: unknown) {
+      console.error("Error saving invoice:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      toast({ description: `Failed to save invoice: ${errorMessage}`, variant: "destructive" });
     }
-
-    const visitId = `visit_${Date.now()}`;
-    const emailKey = selectedUser.email.replace(/[@.]/g, "_");
-    const patientRef = doc(db, "patient-medication", emailKey);
-    const visitRef = doc(collection(patientRef, "visits"), visitId);
-
-    // Store Visit Metadata
-    await setDoc(visitRef, {
-      patientId: selectedUser?.id || "",
-      patientName: selectedUser?.name || "",
-      patientEmail: selectedUser?.email || "",
-      consultationFee,
-      totalAmount: total,
-      visitId,
-      visitDate: new Date().toISOString(),
-      status: "active"
-    });
-
-    // Store medications with proper structure
-    const medicationsCollection = collection(visitRef, "medications");
-    await Promise.all(
-      medications.map(async (med, index) => {
-        const quantity = parseInt(medicationQuantities[index]?.quantity) || 0;
-        if (quantity < 0 || isNaN(quantity)) {
-          throw new Error(`Invalid quantity for ${med.name}`);
-        }
-
-        const reminderTimes = calculateReminderTimes(med.frequency, "07:00");
-        if (!reminderTimes || reminderTimes.length === 0) {
-          throw new Error(`Invalid reminderTimes for ${med.name}`);
-        }
-
-        // Create medication document with consistent structure
-        await addDoc(medicationsCollection, {
-          // Basic medication info
-          name: med.name,
-          dosage: med.dosage,
-          frequency: med.frequency,
-          days: med.days,
-          duration: med.days, // Add duration field for app compatibility
-          amount: medicationAmounts[index]?.amount || 0,
-          quantity,
-          
-          // Medication type
-          type: {
-            name: med.type.name || "Unknown",
-            icon: med.type.icon || "",
-          },
-          
-          // Patient info
-          userEmail: selectedUser.email,
-          visitId,
-          
-          // Reminder configuration
-          reminderTimes, // Array of times like ["07:00", "13:00", "19:00"]
-          
-          // Daily tracking - initialize for today
-          takenToday: new Array(reminderTimes.length).fill(false),
-          
-          // Metadata
-          createdAt: new Date().toISOString(),
-          status: "active"
-        });
-      })
-    );
-
-    toast({ description: "Medication sent to the app. Login to view!" });
-  } catch (error) {
-    console.error("Error saving invoice:", error);
-    toast({ description: `Failed to save invoice: ${error.message}`, variant: "destructive" });
-  }
-};
-
+  };
 
   return (
-    <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container print:block p-4 md:p-10">
+    <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container p-4 md:p-10">
       {/* Invoice Header */}
       <div className="flex flex-row justify-between items-center">
         <div>
@@ -181,7 +185,7 @@ const saveInvoice = async () => {
         </div>
         <div>
           <p>Invoice No: 001</p>
-          <p><span className="font-semibold">Date:</span> Feb, 1 2025</p>
+          <p><span className="font-semibold">Date:</span> {new Date().toLocaleDateString()}</p>
         </div>
       </div>
       {/* Patient Details */}
@@ -190,7 +194,7 @@ const saveInvoice = async () => {
         <div className="flex flex-col md:flex-row justify-between gap-6 text-sm md:text-base">
           <div>
             <p className="capitalize"><span className="font-semibold uppercase">Name:</span> {selectedUser?.name || "N/A"}</p>
-            <p className="capitalize"><span className="font-semibold uppercase">Age:</span> 23</p>
+            <p className="capitalize"><span className="font-semibold uppercase">Age:</span> {selectedUser?.dob ?? "N/A"}</p>
             <p className="capitalize"><span className="font-semibold uppercase">Email:</span> {selectedUser?.email || "N/A"}</p>
           </div>
           <div>
@@ -200,82 +204,132 @@ const saveInvoice = async () => {
           </div>
         </div>
       </div>
-      {/* Invoice Table */}
-      <div className="overflow-x-auto">
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="min-w-[80px]">#</TableHead>
-              <TableHead>Service</TableHead>
-              <TableHead className="text-right">Amount (Ksh)</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">INV001</TableCell>
-              <TableCell>Consultation Fee</TableCell>
-              <TableCell className="text-right">{consultationFee.toFixed(2)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-      {/* Medication Table */}
-      <div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>#</TableHead>
-              <TableHead>Medication</TableHead>
-              <TableHead>Dosage</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Subtotal</TableHead>
-              <TableHead>Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {medications?.map((med, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{med.name}</TableCell>
-                <TableCell>{med.dosage}</TableCell>
-                <TableCell className="w-[200px]">
-                  <Input
-                    type="number"
-                    min="0"
-                    placeholder="Quantity"
-                    value={medicationQuantities[index]?.quantity || ""}
-                    onChange={(e) => handleQuantityChange(index, e.target.value)}
-                  />
-                </TableCell>
-                <TableCell className="w-[200px]">
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="Subtotal"
-                    value={medicationAmounts[index]?.amount || ""}
-                    onChange={(e) => handleAmountChange(index, e.target.value)}
-                  />
-                </TableCell>
-                <TableCell className="w-[200px] text-right">
-                  {medicationAmounts[index]?.amount.toFixed(2)}
-                </TableCell>
+      {/* Consultation Fee Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Consultation Fee</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableCaption>Consultation fee details</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="min-w-[80px]">#</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead className="text-right">Amount (Ksh)</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">INV001</TableCell>
+                <TableCell>Consultation Fee</TableCell>
+                <TableCell className="text-right">{consultationFee.toFixed(2)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+      {/* Medication Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Medications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableCaption>Prescribed medications and costs</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>#</TableHead>
+                <TableHead>Medication</TableHead>
+                <TableHead>Dosage</TableHead>
+                <TableHead>Frequency</TableHead>
+                <TableHead>Days</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Unit Price (Ksh)</TableHead>
+                <TableHead className="text-right">Subtotal (Ksh)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {medications.map((med, index) => (
+                <TableRow key={med.name + index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{med.name}</TableCell>
+                  <TableCell>{med.dosage}</TableCell>
+                  <TableCell>{med.frequency}</TableCell>
+                  <TableCell>{med.days}</TableCell>
+                  <TableCell className="w-[150px]">
+                    <div className="space-y-2">
+                      <Label htmlFor={`quantity-${index}`} className="text-sm font-medium">
+                        Quantity
+                      </Label>
+                      <Input
+                        id={`quantity-${index}`}
+                        type="number"
+                        min="0"
+                        placeholder="Enter quantity"
+                        value={medicationQuantities[index]?.quantity || ""}
+                        onChange={(e) => handleQuantityChange(index, e.target.value)}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell className="w-[150px]">
+                    <div className="space-y-2">
+                      <Label htmlFor={`amount-${index}`} className="text-sm font-medium">
+                        Unit Price
+                      </Label>
+                      <Input
+                        id={`amount-${index}`}
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        value={medicationAmounts[index]?.amount || ""}
+                        onChange={(e) => handleAmountChange(index, e.target.value)}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {(parseFloat(medicationAmounts[index]?.amount) || 0).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {medications.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                    No medications prescribed
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
       {/* Totals */}
       <div className="flex items-end justify-end">
-        <div className="w-full md:w-1/2 flex flex-col gap-2">
-          <Table>
-            <TableRow>
-              <TableCell className="text-right">Total (Ksh)</TableCell>
-              <TableCell className="text-right">{total.toFixed(2)}</TableCell>
-            </TableRow>
-          </Table>
-          <div className="flex justify-between items-center w-full gap-5 mt-10 print:hidden">
+        <div className="w-full md:w-1/2">
+          <Card>
+            <CardContent className="pt-6">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="text-right font-medium">Consultation Fee (Ksh)</TableCell>
+                    <TableCell className="text-right">{consultationFee.toFixed(2)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-medium">Medications Total (Ksh)</TableCell>
+                    <TableCell className="text-right">
+                      {(total - consultationFee).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-semibold">Total (Ksh)</TableCell>
+                    <TableCell className="text-right font-semibold">{total.toFixed(2)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <div className="flex justify-between items-center w-full gap-5 mt-6 print:hidden">
             <Button onClick={() => window.print()} className="bg-green-1 text-white w-1/2">
               Print Invoice
             </Button>
@@ -294,7 +348,7 @@ const saveInvoice = async () => {
                       <div className="flex justify-center items-center">
                         <Image src="/images/success.gif" alt="success" width={200} height={200} />
                       </div>
-                      Your payment has been successfully sent to your insurance provider for approval. Your Bill will be sent to you. Thank you for entrusting our services.
+                      Your payment has been successfully sent to your insurance provider for approval. Your bill will be sent to you. Thank you for entrusting our services.
                     </DialogDescription>
                     <DialogClose>
                       <div className="flex justify-end">
