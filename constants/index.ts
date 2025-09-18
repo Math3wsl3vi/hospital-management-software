@@ -17,7 +17,9 @@ export const sidebarLinks = [
 
     },
     { label: "Case Collaboration", route: "/cases", imgUrl: "/images/case.png", isDropdown: true },
-     { label: "Appointment Center", route: "/cases", imgUrl: "/images/case.png", isDropdown: true },
+     { label: "Appointment Center", route: "/appointments", imgUrl: "/images/case.png", isDropdown: true },
+     { label: "RiviaMed AI", route: "/riviaAI", imgUrl: "/images/clean.png", isDropdown: true },
+
     {
         label: 'Records',
         route:'/Records',
@@ -31,8 +33,8 @@ export const sidebarLinks = [
 
     },
     {
-        label: 'Bed Management',
-        route:'/ward',
+        label: 'Procurement',
+        route:'/procurement',
         imgUrl:'/images/ward.png'
 
     },
@@ -110,6 +112,6 @@ export const ItemCard = [
         id:'10',
         name: 'Procurement',
         icon: '/images/business.png',
-        route:'/appointments',
+        route:'/procurement',
     },
 ]

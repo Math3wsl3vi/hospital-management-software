@@ -79,67 +79,85 @@ const PatientInvoice = () => {
   };
 
   // Save invoice to Firebase
-  const saveInvoice = async () => {
-    try {
-      if (!selectedUser?.email) {
-        toast({ description: "No patient email found!", variant: "destructive" });
-        console.log("Selected User:", selectedUser);
-        return;
-      }
-
-      const visitId = `visit_${Date.now()}`;
-      const patientRef = doc(db, "patient-medication", selectedUser.email.replace(/[@.]/g, "_"));
-      const visitRef = doc(collection(patientRef, "visits"), visitId);
-
-      // Store Visit Metadata
-      await setDoc(visitRef, {
-        patientId: selectedUser?.id || "",
-        patientName: selectedUser?.name || "",
-        patientEmail: selectedUser?.email || "",
-        consultationFee,
-        totalAmount: total,
-        visitId,
-        visitDate: new Date().toISOString(),
-      });
-
-      // Store medications
-      const medicationsCollection = collection(visitRef, "medications");
-      await Promise.all(
-        medications.map(async (med, index) => {
-          const quantity = parseInt(medicationQuantities[index]?.quantity) || 0;
-          if (quantity < 0 || isNaN(quantity)) {
-            throw new Error(`Invalid quantity for ${med.name}`);
-          }
-          const reminderTimes = calculateReminderTimes(med.frequency, "07:00");
-          if (!reminderTimes || reminderTimes.length === 0) {
-            throw new Error(`Invalid reminderTimes for ${med.name}`);
-          }
-          await addDoc(medicationsCollection, {
-            name: med.name,
-            dosage: med.dosage,
-            frequency: med.frequency,
-            days: med.days,
-            amount: medicationAmounts[index]?.amount || 0,
-            quantity,
-            type: {
-              name: med.type.name || "Unknown",
-              icon: med.type.icon || "",
-            },
-            userEmail: selectedUser.email,
-            visitId,
-            createdAt: new Date().toISOString(),
-            reminderTimes,
-            takenToday: new Array(reminderTimes.length).fill(false),
-          });
-        })
-      );
-
-      toast({ description: "Medication sent to the app. Login to view!" });
-    } catch (error) {
-      console.error("Error saving invoice:", error);
-      toast({ description: `Failed to save invoice`, variant: "destructive" });
+const saveInvoice = async () => {
+  try {
+    if (!selectedUser?.email) {
+      toast({ description: "No patient email found!", variant: "destructive" });
+      return;
     }
-  };
+
+    const visitId = `visit_${Date.now()}`;
+    const emailKey = selectedUser.email.replace(/[@.]/g, "_");
+    const patientRef = doc(db, "patient-medication", emailKey);
+    const visitRef = doc(collection(patientRef, "visits"), visitId);
+
+    // Store Visit Metadata
+    await setDoc(visitRef, {
+      patientId: selectedUser?.id || "",
+      patientName: selectedUser?.name || "",
+      patientEmail: selectedUser?.email || "",
+      consultationFee,
+      totalAmount: total,
+      visitId,
+      visitDate: new Date().toISOString(),
+      status: "active"
+    });
+
+    // Store medications with proper structure
+    const medicationsCollection = collection(visitRef, "medications");
+    await Promise.all(
+      medications.map(async (med, index) => {
+        const quantity = parseInt(medicationQuantities[index]?.quantity) || 0;
+        if (quantity < 0 || isNaN(quantity)) {
+          throw new Error(`Invalid quantity for ${med.name}`);
+        }
+
+        const reminderTimes = calculateReminderTimes(med.frequency, "07:00");
+        if (!reminderTimes || reminderTimes.length === 0) {
+          throw new Error(`Invalid reminderTimes for ${med.name}`);
+        }
+
+        // Create medication document with consistent structure
+        await addDoc(medicationsCollection, {
+          // Basic medication info
+          name: med.name,
+          dosage: med.dosage,
+          frequency: med.frequency,
+          days: med.days,
+          duration: med.days, // Add duration field for app compatibility
+          amount: medicationAmounts[index]?.amount || 0,
+          quantity,
+          
+          // Medication type
+          type: {
+            name: med.type.name || "Unknown",
+            icon: med.type.icon || "",
+          },
+          
+          // Patient info
+          userEmail: selectedUser.email,
+          visitId,
+          
+          // Reminder configuration
+          reminderTimes, // Array of times like ["07:00", "13:00", "19:00"]
+          
+          // Daily tracking - initialize for today
+          takenToday: new Array(reminderTimes.length).fill(false),
+          
+          // Metadata
+          createdAt: new Date().toISOString(),
+          status: "active"
+        });
+      })
+    );
+
+    toast({ description: "Medication sent to the app. Login to view!" });
+  } catch (error) {
+    console.error("Error saving invoice:", error);
+    toast({ description: `Failed to save invoice: ${error.message}`, variant: "destructive" });
+  }
+};
+
 
   return (
     <div ref={invoiceRef} className="flex flex-col gap-10 invoice-container print:block p-4 md:p-10">

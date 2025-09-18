@@ -1,20 +1,33 @@
 import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/toaster"
-import { Poppins } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
+import localFont from "next/font/local";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
 
-
-const poppins = Poppins({
-  weight: ['400', '600', '700'], // Choose desired weights
-  subsets: ['latin'],           // Subsets for language support
+// Load local Poppins font
+const poppins = localFont({
+  src: [
+    {
+      path: "../public/fonts/Poppins-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Poppins-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Poppins-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-poppins", // optional, if you want to use it as a CSS variable
 });
 
-
-
-
 export const metadata: Metadata = {
-  title: "riviamed",
+  title: "Riviamed",
   description: "Hospital Management System and Smart Health Reminder",
 };
 
@@ -25,12 +38,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${poppins.className} antialiased`}
-      >
-        <UserProvider >
-        {children}
-        </UserProvider>
+      <body className={`${poppins.className} antialiased`}>
+        <UserProvider>{children}</UserProvider>
         <Toaster />
       </body>
     </html>

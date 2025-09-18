@@ -16,6 +16,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Badge } from "@/components/ui/badge";
+
+// Define interfaces for data structures
+interface SafetyFlag {
+  type: "LASA" | "HighAlert";
+  description: string;
+  medications: string[];
+}
+
+interface PharmacistData {
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+}
+
+interface BuddyData {
+  name: string;
+  buddy: string;
+  remarks: string;
+}
 
 const DoctorNotesResults = () => {
   const router = useRouter();
@@ -24,7 +46,7 @@ const DoctorNotesResults = () => {
   const selectedUser = useUserStore((state) => state.selectedUser);
   const patientId = selectedUser?.id?.toString();
 
-  const [pharmacistData, setPharmacistData] = useState(
+  const [pharmacistData, setPharmacistData] = useState<PharmacistData[]>(
     docNotes.medication
       ? docNotes.medication.split(",").map((med) => ({
           name: med.trim(),
@@ -35,23 +57,28 @@ const DoctorNotesResults = () => {
       : []
   );
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [safetyFlags, setSafetyFlags] = useState<SafetyFlag[]>([]);
+
+  const [buddyData, setBuddyData] = useState<BuddyData[]>([
+    { name: "", buddy: "", remarks: "" },
+  ]);
+
   const HandleInputChange = (
     index: number,
-    field: keyof (typeof pharmacistData)[number],
+    field: keyof PharmacistData,
     value: string
   ) => {
     const updatedData = [...pharmacistData];
     updatedData[index][field] = value;
     setPharmacistData(updatedData);
+    // Optional: Auto-trigger analysis after debounce (uncomment and add useEffect for real-time)
+    analyzeMedicationsForSafety();
   };
-
-    const [buddyData, setBuddyData] = useState([
-    { name: "", buddy: "", remarks: "" },
-  ]);
 
   const HandleBuddyChange = (
     index: number,
-    field: keyof (typeof buddyData)[number],
+    field: keyof BuddyData,
     value: string
   ) => {
     const updatedData = [...buddyData];
@@ -63,10 +90,58 @@ const DoctorNotesResults = () => {
     setBuddyData([...buddyData, { name: "", buddy: "", remarks: "" }]);
   };
 
+  // AI Analysis Function
+  const analyzeMedicationsForSafety = async () => {
+    if (pharmacistData.length === 0 || pharmacistData.every((med) => !med.name)) {
+      toast({ description: "No medications to analyze.", variant: "default" });
+      return;
+    }
+
+    const medNames = pharmacistData.map((med) => med.name).filter(Boolean);
+    setIsAnalyzing(true);
+    setSafetyFlags([]);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/analyze-medications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ medications: medNames }),
+      });
+
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+      setSafetyFlags(data.flags || []);
+
+      if (data.flags && data.flags.length > 0) {
+        toast({
+          description: `${data.flags.length} potential safety issue(s) detected. Review below.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({ description: "No safety issues detected.", variant: "default" });
+      }
+    } catch (error) {
+      console.error("Error analyzing medications:", error);
+      toast({
+        description: "Failed to analyze medications. Please check your connection.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const savePharmacistData = async () => {
     if (!patientId) {
       toast({ description: "No patient selected.", variant: "destructive" });
+      return;
+    }
+
+    // Optional: Require analysis before saving
+    if (safetyFlags.length > 0 && !confirm("Safety issues detected. Proceed anyway?")) {
       return;
     }
 
@@ -108,7 +183,7 @@ const DoctorNotesResults = () => {
       <div className="w-full">
         <label className="text-xl">Prescribed Medication</label>
         <div className="mt-3 border rounded-md min-h-44 p-2">
-          {pharmacistData.map((med: any, index: number) => (
+          {pharmacistData.map((med: PharmacistData, index: number) => (
             <div
               key={index}
               className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b p-2"
@@ -143,7 +218,45 @@ const DoctorNotesResults = () => {
           ))}
         </div>
 
-        {/* ✅ Buddy System Table */}
+        {/* AI Safety Analysis Button */}
+        <div className="mt-3 flex justify-between items-center">
+          <span className="text-sm text-gray-600">AI Safety Check (LASA & High-Alert)</span>
+          <Button
+            onClick={analyzeMedicationsForSafety}
+            disabled={isAnalyzing || pharmacistData.length === 0}
+            variant="outline"
+            size="sm"
+          >
+            {isAnalyzing ? "Analyzing..." : "Analyze Safety"}
+          </Button>
+        </div>
+
+        {/* Safety Alerts */}
+        {safetyFlags.length > 0 && (
+          <div className="mt-3">
+            <Alert variant="destructive">
+              <AlertDescription className="flex flex-col gap-2">
+                <strong>AI Safety Flags Detected:</strong>
+                {safetyFlags.map((flag, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <Badge
+                      variant={flag.type === "HighAlert" ? "destructive" : "secondary"}
+                      className={flag.type === "HighAlert" ? "bg-red-500" : "bg-orange-500"}
+                    >
+                      {flag.type}
+                    </Badge>
+                    <span>{flag.description}</span>
+                    {flag.medications.length > 0 && (
+                      <span className="text-sm font-mono">({flag.medications.join(", ")})</span>
+                    )}
+                  </div>
+                ))}
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+
+        {/* Buddy System Table */}
         <div className="mt-6">
           <label className="text-xl">Buddy System</label>
           <div className="mt-3 border rounded-md p-2 overflow-x-auto">
@@ -156,7 +269,7 @@ const DoctorNotesResults = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {buddyData.map((buddy: any, index: number) => (
+                {buddyData.map((buddy: BuddyData, index: number) => (
                   <TableRow key={index}>
                     <TableCell>
                       <Input
@@ -189,17 +302,21 @@ const DoctorNotesResults = () => {
                 ))}
               </TableBody>
             </Table>
+            <Button onClick={addBuddyRow} variant="outline" size="sm" className="mt-2">
+              Add Row
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* ✅ Action buttons */}
+      {/* Action buttons */}
       <div className="w-full flex flex-col sm:flex-row justify-end gap-4 pt-5">
         <Button className="bg-green-1 w-full sm:w-1/3 md:w-1/4">
           Print Medication
         </Button>
         <Button
           onClick={savePharmacistData}
+          disabled={isAnalyzing}
           className="w-full sm:w-1/3 md:w-1/4 bg-green-1"
         >
           Continue

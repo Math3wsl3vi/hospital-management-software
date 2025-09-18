@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI('AIzaSyCPI8Sp2FWZZAbjPsexjhNLl-KHCxVlNfo');
+const genAI = new GoogleGenerativeAI('AIzaSyB_up1_lqDmPfZUsHqzkpQBkzV03olkeFs');
 
 // Middleware
 app.use(cors({
@@ -22,6 +22,78 @@ app.use(express.json());
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'Server is running!', timestamp: new Date().toISOString() });
+});
+
+// Medication analysis endpoint
+app.post('/api/analyze-medications', async (req, res) => {
+  try {
+    const { medications } = req.body;
+
+    if (!medications || !Array.isArray(medications) || medications.length === 0) {
+      return res.status(400).json({ error: 'Medications must be a non-empty array' });
+    }
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
+   const prompt = `
+You are a hospital safety AI. 
+Here is your knowledge base for look-alike/sound-alike (LASA) and high-alert drugs in Kenya:
+
+LASA Examples:
+- Ceftriaxone vs. Cefotaxime vs. Cefuroxime
+- Augmentin (amoxicillin + clavulanate) vs. Ampiclox (ampicillin + cloxacillin)
+- Erythromycin vs. Azithromycin vs. Clarithromycin
+- Metronidazole vs. Metformin
+- Gentamicin vs. Vancomycin
+
+Look-Alike Examples:
+- Amoxil vs. Ampiclox (both red/yellow capsules)
+- Augmentin vs. Cotrimoxazole (white scored tablets in silver strips)
+- Ceftriaxone vs. Cefotaxime (white powder vials)
+- Azithromycin vs. Erythromycin (white film-coated tablets)
+
+High-Alert Drugs:
+- Insulins (Actrapid, Mixtard, Insulatard, Humalog, Humulin)
+- Heparin, Enoxaparin (Clexane), Warfarin
+- Potassium chloride injection, Sodium chloride ≥3%, Magnesium sulfate injection
+
+Now analyze these medications: ${medications.join(', ')}.
+Respond ONLY in JSON with { "flags": [ ... ] } format.`;
+
+
+    const result = await model.generateContent(prompt);
+    let responseText = result.response.text().trim();
+
+    // 🧹 Clean markdown fences if Gemini still adds them
+    responseText = responseText.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(responseText);
+    } catch (err) {
+    console.error('Error analyzing medications:', err);
+      console.error("Failed to parse AI JSON:", responseText);
+      return res.status(500).json({ error: 'Invalid JSON returned from AI', raw: responseText });
+    }
+
+    res.json(parsed);
+
+  } catch (err) {
+    console.error('Error analyzing medications:', err);
+    res.status(500).json({ error: 'Failed to analyze medications', details: err.message });
+  }
+});
+
+
+
+app.post('/api/hospital-analytics', async (req, res) => {
+  const { upcomingApptsCount, medicationTrends, procurementStock, analysisDate } = req.body;
+  const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash' });
+  const prompt = `Analyze hospital analytics as of ${analysisDate}: Upcoming appointments: ${upcomingApptsCount}. Medication trends: ${medicationTrends}. Stock: ${procurementStock}. Provide 3-5 insights on trends, potential shortages, patient load. Respond in JSON: { insights: [{ title: '...', description: '...', type: 'trend|warning|recommendation' }] }`;
+  const result = await model.generateContent(prompt);
+  const response = await result.response.text();
+  res.json(JSON.parse(response))
+  res.json(JSON.parse(result.response.text()));
 });
 
 // AI recommendation endpoint
